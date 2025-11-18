@@ -15,6 +15,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ResourcesPage from "@/pages/ResourcesPage";
 import ResourceDetailPage from "@/pages/ResourceDetailPage";
 import CreateResourcePage from "@/pages/CreateResourcePage";
+import EditResourcePage from "@/pages/EditResourcePage";
 import ProfilePage from "@/pages/ProfilePage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 
@@ -60,6 +61,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CreateResourcePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/resources/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditResourcePage />
                   </ProtectedRoute>
                 }
               />

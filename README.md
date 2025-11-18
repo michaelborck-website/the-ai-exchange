@@ -276,15 +276,18 @@ the-ai-exchange/
 
 ### The "Resource" Model
 
-To keep the database simple for the MVP, we use **Single Table Inheritance**. All five resource types (Requests, Use Cases, Prompts, Tools, and Policies) are stored in a single `resources` table, distinguished by a `type` enum:
+To keep the database simple for the MVP, we use **Single Table Inheritance**. All eight resource types are stored in a single `resources` table, distinguished by a `type` enum:
 
 ```python
 class ResourceType(str, Enum):
-    REQUEST = "REQUEST"    # Questions needing solutions
-    USE_CASE = "USE_CASE"  # Implementation stories
-    PROMPT = "PROMPT"      # AI prompts and templates
-    TOOL = "TOOL"          # Software and applications
-    POLICY = "POLICY"      # Institutional guidelines
+    REQUEST = "REQUEST"        # Questions needing solutions
+    USE_CASE = "USE_CASE"      # Implementation stories
+    PROMPT = "PROMPT"          # AI prompts and templates
+    TOOL = "TOOL"              # Software and applications
+    POLICY = "POLICY"          # Institutional guidelines
+    PAPER = "PAPER"            # Published research papers
+    PROJECT = "PROJECT"        # Active research projects
+    CONFERENCE = "CONFERENCE"  # Conference proceedings
 ```
 
 This approach provides:

@@ -1,8 +1,3 @@
-Here is a clean, professional **README.md** tailored to the specific architecture and goals we discussed. You can drop this directly into the root of your project folder.
-
------
-
-````markdown
 # The AI Exchange
 
 **The AI Exchange** is an internal platform designed for [School Name] to facilitate the discovery, sharing, and discussion of Artificial Intelligence use cases in a business school environment. 
@@ -122,7 +117,7 @@ docker-compose up -d --build
 
 ## 📄 License
 
-Internal Use Only.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-```
-```
+Copyright © 2025 Michael Borck
+

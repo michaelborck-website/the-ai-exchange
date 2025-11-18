@@ -74,6 +74,7 @@ export default function CreateResourcePage() {
                 <option value="REQUEST">Request</option>
                 <option value="USE_CASE">Use Case</option>
                 <option value="PROMPT">Prompt</option>
+                <option value="TOOL">Tool</option>
                 <option value="POLICY">Policy</option>
               </Select>
             </FormControl>

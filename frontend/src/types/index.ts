@@ -41,7 +41,7 @@ export interface UserUpdateRequest {
   };
 }
 
-export type ResourceType = "REQUEST" | "USE_CASE" | "PROMPT" | "POLICY";
+export type ResourceType = "REQUEST" | "USE_CASE" | "PROMPT" | "TOOL" | "POLICY";
 export type ResourceStatus = "OPEN" | "SOLVED" | "ARCHIVED";
 
 export interface Resource {

@@ -22,6 +22,7 @@ class ResourceType(str, Enum):
     REQUEST = "REQUEST"
     USE_CASE = "USE_CASE"
     PROMPT = "PROMPT"
+    TOOL = "TOOL"
     POLICY = "POLICY"
 
 

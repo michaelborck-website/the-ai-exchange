@@ -72,6 +72,7 @@ export default function ResourcesPage() {
               <option value="REQUEST">Requests</option>
               <option value="USE_CASE">Use Cases</option>
               <option value="PROMPT">Prompts</option>
+              <option value="TOOL">Tools</option>
               <option value="POLICY">Policies</option>
             </Select>
             <Select

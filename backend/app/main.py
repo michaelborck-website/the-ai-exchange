@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from sqlmodel import SQLModel
 
-from app.api import auth, resources
+from app.api import admin, auth, resources, subscriptions
 from app.core.config import settings
 from app.services.database import engine
 
@@ -73,6 +73,8 @@ def health_check() -> dict[str, str]:
 # Include API routers
 app.include_router(auth.router)
 app.include_router(resources.router)
+app.include_router(admin.router)
+app.include_router(subscriptions.router)
 
 
 # API v1 routes

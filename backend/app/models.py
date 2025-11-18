@@ -160,6 +160,8 @@ class UserResponse(UserBase):
     id: UUID
     role: UserRole
     is_active: bool
+    is_approved: bool
+    notification_prefs: dict[str, Any]
     created_at: datetime
 
     class Config:

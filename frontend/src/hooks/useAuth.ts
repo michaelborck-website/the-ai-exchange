@@ -8,14 +8,29 @@ import { LoginRequest, RegisterRequest, UserUpdateRequest } from "@/types/index"
 import { useAuth as useAuthContext } from "@/context/AuthContext";
 
 export function useLogin() {
+  const { setUser, logout } = useAuthContext();
+
   return useMutation({
     mutationFn: (data: LoginRequest) => apiClient.login(data),
+    onSuccess: (response) => {
+      // Update auth context with logged-in user
+      setUser(response);
+    },
+    onError: () => {
+      logout();
+    },
   });
 }
 
 export function useRegister() {
+  const { setUser } = useAuthContext();
+
   return useMutation({
     mutationFn: (data: RegisterRequest) => apiClient.register(data),
+    onSuccess: (response) => {
+      // User is automatically logged in after registration
+      setUser(response);
+    },
   });
 }
 

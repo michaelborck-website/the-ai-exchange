@@ -31,6 +31,9 @@ dist/
 .vite/
 *.tsbuildinfo
 
+# Exception: Don't ignore frontend/src/lib (source code, not venv)
+!frontend/src/lib/
+
 # Environment variables
 .env
 .env.local

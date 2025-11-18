@@ -74,6 +74,9 @@ export default function ResourcesPage() {
               <option value="PROMPT">Prompts</option>
               <option value="TOOL">Tools</option>
               <option value="POLICY">Policies</option>
+              <option value="PAPER">Papers</option>
+              <option value="PROJECT">Projects</option>
+              <option value="CONFERENCE">Conferences</option>
             </Select>
             <Select
               value={status}

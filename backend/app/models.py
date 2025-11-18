@@ -24,6 +24,9 @@ class ResourceType(str, Enum):
     PROMPT = "PROMPT"
     TOOL = "TOOL"
     POLICY = "POLICY"
+    PAPER = "PAPER"
+    PROJECT = "PROJECT"
+    CONFERENCE = "CONFERENCE"
 
 
 class ResourceStatus(str, Enum):

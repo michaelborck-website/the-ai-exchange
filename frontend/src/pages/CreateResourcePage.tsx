@@ -76,6 +76,9 @@ export default function CreateResourcePage() {
                 <option value="PROMPT">Prompt</option>
                 <option value="TOOL">Tool</option>
                 <option value="POLICY">Policy</option>
+                <option value="PAPER">Paper</option>
+                <option value="PROJECT">Project</option>
+                <option value="CONFERENCE">Conference</option>
               </Select>
             </FormControl>
 

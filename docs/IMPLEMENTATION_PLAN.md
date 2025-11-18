@@ -1,17 +1,20 @@
 # Implementation Plan: The AI Exchange MVP
 
+**For:** School of Marketing and Management (SoMM), Curtin University
 **Version:** 1.0
 **Last Updated:** November 18, 2025
-**Status:** Draft
+**Status:** In Development
+**Domain:** @curtin.edu.au
 
 ---
 
 ## 1. Overview
 
-This document outlines the phased implementation of **The AI Exchange** MVP. The project will be built using:
-- **Backend:** FastAPI with Python 3.11+, SQLite (PoC), SQLModel ORM
+This document outlines the phased implementation of **The AI Exchange** MVP for the School of Marketing and Management (SoMM) at Curtin University. The project will be built using:
+- **Backend:** FastAPI with Python 3.11+, SQLite (MVP), PostgreSQL (Production), SQLModel ORM
 - **Frontend:** React 18+ with TypeScript, Vite, Chakra UI
 - **Tooling:** uv (environment), ruff (linting/formatting), mypy (type checking), pytest (testing)
+- **Target Users:** SoMM staff and faculty (@curtin.edu.au domain)
 
 ---
 

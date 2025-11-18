@@ -6,12 +6,17 @@ This document provides instructions for Claude Code to understand the project st
 
 ## Project Overview
 
-**The AI Exchange** is a full-stack web application for sharing and discovering AI use cases, prompts, and policies in a business school environment.
+**The AI Exchange** is a full-stack web application built for the **School of Marketing and Management (SoMM)** to facilitate the discovery, sharing, and discussion of Artificial Intelligence use cases and applications in marketing and management contexts.
 
-- **Tech Stack:** FastAPI (Python) + React (TypeScript)
+- **Organization:** School of Marketing and Management (SoMM) at Curtin University
+- **Domain:** @curtin.edu.au
+- **Tech Stack:** FastAPI (Python 3.11+) + React 18+ (TypeScript)
 - **Database:** SQLite (MVP) / PostgreSQL (Production)
-- **Tooling:** uv, ruff, mypy, pytest, Chakra UI
-- **Documentation:** See `docs/srs.md` for requirements and `docs/IMPLEMENTATION_PLAN.md` for phases
+- **Tooling:** uv, ruff, mypy, pytest, Chakra UI, Vitest
+- **Documentation:**
+  - `docs/srs.md` - Software Requirements Specification
+  - `docs/IMPLEMENTATION_PLAN.md` - 10-phase implementation roadmap
+  - `CLAUDE.md` - This file (development guidelines)
 
 ---
 
@@ -445,22 +450,40 @@ VITE_API_VERSION=v1
 **Terminal 1 - Backend:**
 ```bash
 cd backend
+
+# Create and activate virtual environment (first time only)
 uv venv
-source .venv/bin/activate
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+
+# Install dependencies
 uv pip install -r requirements.txt
+
+# Copy and configure environment
+cp .env.example .env
+# ALLOWED_DOMAINS is already set to curtin.edu.au
+
+# Run development server
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Terminal 2 - Frontend:**
 ```bash
 cd frontend
+
+# Copy and configure environment
+cp .env.example .env
+# Edit .env if needed for your environment
+
+# Install dependencies and start dev server
 npm install
 npm run dev
 ```
 
-- Backend: http://localhost:8000
-- Frontend: http://localhost:5173
-- API Docs: http://localhost:8000/docs
+**Access Points:**
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:8000
+- **API Documentation:** http://localhost:8000/docs
+- **API Redoc:** http://localhost:8000/redoc
 
 ---
 

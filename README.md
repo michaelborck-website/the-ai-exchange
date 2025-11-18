@@ -6,13 +6,16 @@ The goal is to connect SoMM staff who are experimenting with AI ("The Spark") wi
 
 ## 🚀 Project Overview
 
-This is a **complete full-stack web application** built with modern technologies and production-ready code quality. It features a unified feed where staff can post five distinct types of resources:
+This is a **complete full-stack web application** built with modern technologies and production-ready code quality. It features a unified feed where faculty and researchers can post eight distinct types of resources:
 
 1. **Requests:** Questions and problems that need community solutions
 2. **Use Cases:** Full stories/case studies of AI in teaching or research
 3. **Prompts:** Quick copy-paste blocks of text/code for specific tools
 4. **Tools:** AI software, applications, extensions, and configurations
 5. **Policies:** Official or classroom-level governance documents
+6. **Papers:** Published research papers and literature
+7. **Projects:** Active research projects seeking collaboration or feedback
+8. **Conferences:** Conference proceedings, keynotes, and workshops
 
 ### Key Features
 * **Unified Feed:** Filters content by type, topic/tags, or search with advanced discovery

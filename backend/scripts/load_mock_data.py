@@ -25,6 +25,13 @@ from datetime import datetime, timedelta
 # Mock data
 MOCK_USERS = [
     {
+        "email": "admin@curtin.edu.au",
+        "full_name": "System Administrator",
+        "password": "AdminPassword123!",
+        "role": "ADMIN",
+        "is_active": True,
+    },
+    {
         "email": "sarah.chen@curtin.edu.au",
         "full_name": "Dr. Sarah Chen",
         "password": "TestPassword123!",

@@ -22,6 +22,7 @@ export function useResources(params?: {
   return useQuery({
     queryKey: ["resources", params],
     queryFn: () => apiClient.listResources(params),
+    staleTime: 0, // Always refetch fresh data to get latest resources with all fields
   });
 }
 

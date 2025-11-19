@@ -19,8 +19,13 @@ export function useResources(params?: {
   skip?: number;
   limit?: number;
 }) {
+  // Create a unique, serializable query key that captures all parameters
+  // This ensures different parameter combinations don't share the same cache
+  // (e.g., FilterSidebar with limit:100 vs ResourcesPage with filters applied)
+  const queryKey = ["resources", JSON.stringify(params || {})];
+
   return useQuery({
-    queryKey: ["resources", params],
+    queryKey,
     queryFn: () => apiClient.listResources(params),
     staleTime: 0, // Always refetch fresh data to get latest resources with all fields
   });

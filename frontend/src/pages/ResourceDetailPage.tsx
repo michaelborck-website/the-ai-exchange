@@ -163,41 +163,50 @@ export default function ResourceDetailPage() {
                 </HStack>
               </VStack>
 
-              {/* Author info */}
-              <HStack spacing={3} width="full" justify="space-between">
-                <VStack align="flex-start" spacing={1}>
-                  <Text fontSize="sm" fontWeight="semibold">
-                    Shared by {resource.user_id}
-                  </Text>
-                  <Text fontSize="xs" color="gray.600">
-                    {new Date(resource.created_at).toLocaleDateString()}
-                  </Text>
-                </VStack>
+              {/* Author info - only for logged-in users */}
+              {user && (
+                <HStack spacing={3} width="full" justify="space-between">
+                  <VStack align="flex-start" spacing={1}>
+                    <Text fontSize="sm" fontWeight="semibold">
+                      Shared by {resource.user_id}
+                    </Text>
+                    <Text fontSize="xs" color="gray.600">
+                      {new Date(resource.created_at).toLocaleDateString()}
+                    </Text>
+                  </VStack>
 
-                {isOwner && (
-                  <HStack spacing={2}>
-                    <Button
-                      size="sm"
-                      colorScheme="blue"
-                      onClick={handleEdit}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      colorScheme="red"
-                      onClick={handleDelete}
-                      isLoading={deleteResourceMutation.isPending}
-                    >
-                      Delete
-                    </Button>
-                  </HStack>
-                )}
-              </HStack>
+                  {isOwner && (
+                    <HStack spacing={2}>
+                      <Button
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={handleEdit}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        colorScheme="red"
+                        onClick={handleDelete}
+                        isLoading={deleteResourceMutation.isPending}
+                      >
+                        Delete
+                      </Button>
+                    </HStack>
+                  )}
+                </HStack>
+              )}
+
+              {/* Shared date for guests */}
+              {!user && (
+                <Text fontSize="xs" color="gray.600">
+                  Shared on {new Date(resource.created_at).toLocaleDateString()}
+                </Text>
+              )}
             </VStack>
 
             {/* Engagement Actions */}
-            {!isOwner && (
+            {user && !isOwner && (
               <HStack spacing={2} width="full">
                 <Button
                   size="sm"
@@ -223,6 +232,23 @@ export default function ResourceDetailPage() {
                   {hasTriedIt ? "✓ Tried It" : "Mark as Tried"}
                 </Button>
               </HStack>
+            )}
+
+            {/* Login prompt for guests */}
+            {!user && (
+              <Box bg="blue.50" p={4} borderRadius="md" border="1px" borderColor="blue.200">
+                <Text fontSize="sm" color="blue.900">
+                  <strong>Want to collaborate?</strong> Log in to see the creator's details and start working together.
+                </Text>
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  mt={3}
+                  onClick={() => navigate("/login")}
+                >
+                  Log In
+                </Button>
+              </Box>
             )}
 
             <Divider />

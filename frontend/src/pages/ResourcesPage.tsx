@@ -44,7 +44,11 @@ interface ResourceCard {
 
 function BrowseResourceCard({ resource, isLoggedIn }: { resource: ResourceCard; isLoggedIn: boolean }) {
   const navigate = useNavigate();
-  const displayAuthor = isLoggedIn ? resource.author : "Faculty Member";
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate("/login");
+  };
 
   const statusColor = {
     SEEKING: "blue",
@@ -79,21 +83,23 @@ function BrowseResourceCard({ resource, isLoggedIn }: { resource: ResourceCard; 
             >
               {resource.discipline}
             </Text>
-            <Text
-              fontSize="xs"
-              fontWeight="semibold"
-              color={`${statusColor[resource.collaborationStatus as keyof typeof statusColor]}.600`}
-              bg={`${statusColor[resource.collaborationStatus as keyof typeof statusColor]}.50`}
-              px={2}
-              py={1}
-              borderRadius="full"
-            >
-              {resource.collaborationStatus === "SEEKING"
-                ? "Seeking"
-                : resource.collaborationStatus === "PROVEN"
-                ? "Proven"
-                : "Materials"}
-            </Text>
+            {isLoggedIn && (
+              <Text
+                fontSize="xs"
+                fontWeight="semibold"
+                color={`${statusColor[resource.collaborationStatus as keyof typeof statusColor]}.600`}
+                bg={`${statusColor[resource.collaborationStatus as keyof typeof statusColor]}.50`}
+                px={2}
+                py={1}
+                borderRadius="full"
+              >
+                {resource.collaborationStatus === "SEEKING"
+                  ? "Seeking"
+                  : resource.collaborationStatus === "PROVEN"
+                  ? "Proven"
+                  : "Materials"}
+              </Text>
+            )}
           </HStack>
         </HStack>
 
@@ -102,10 +108,12 @@ function BrowseResourceCard({ resource, isLoggedIn }: { resource: ResourceCard; 
           {resource.title}
         </Heading>
 
-        {/* Author info */}
-        <Text fontSize="xs" color="gray.600">
-          {displayAuthor} • {resource.timeSaved || 2} hrs/week saved
-        </Text>
+        {/* Author info - only for logged-in users */}
+        {isLoggedIn && (
+          <Text fontSize="xs" color="gray.600">
+            {resource.author} • {resource.timeSaved || 2} hrs/week saved
+          </Text>
+        )}
 
         {/* Summary */}
         <Text fontSize="sm" color="gray.700" lineHeight="1.4">
@@ -135,14 +143,20 @@ function BrowseResourceCard({ resource, isLoggedIn }: { resource: ResourceCard; 
             <Text color="gray.600">👍 {resource.views}</Text>
             <Text color="gray.600">✓ {resource.tried}</Text>
           </HStack>
-          <HStack spacing={1}>
-            <Button size="xs" variant="ghost" onClick={(e) => e.stopPropagation()}>
-              Similar
+          {isLoggedIn ? (
+            <HStack spacing={1}>
+              <Button size="xs" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                Similar
+              </Button>
+              <Button size="xs" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                Save
+              </Button>
+            </HStack>
+          ) : (
+            <Button size="xs" variant="ghost" colorScheme="blue" onClick={handleLoginClick}>
+              Login to collaborate
             </Button>
-            <Button size="xs" variant="ghost" onClick={(e) => e.stopPropagation()}>
-              Save
-            </Button>
-          </HStack>
+          )}
         </HStack>
       </VStack>
     </Box>

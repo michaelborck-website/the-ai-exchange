@@ -59,7 +59,11 @@ interface ResourcePreview {
 
 function ResourceCard({ resource, isLoggedIn }: { resource: ResourcePreview; isLoggedIn: boolean }) {
   const navigate = useNavigate();
-  const displayAuthor = isLoggedIn ? resource.author : "Faculty Member";
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate("/login");
+  };
 
   return (
     <Box
@@ -86,9 +90,12 @@ function ResourceCard({ resource, isLoggedIn }: { resource: ResourcePreview; isL
           {resource.title}
         </Heading>
 
-        <Text fontSize="xs" color="gray.600">
-          {displayAuthor} • {resource.timeSaved || 2} hrs/week saved
-        </Text>
+        {/* Only show author and time saved for logged-in users */}
+        {isLoggedIn && (
+          <Text fontSize="xs" color="gray.600">
+            {resource.author} • {resource.timeSaved || 2} hrs/week saved
+          </Text>
+        )}
 
         <Text fontSize="sm" color="gray.700" lineHeight="1.4">
           {resource.quickSummary}
@@ -107,14 +114,20 @@ function ResourceCard({ resource, isLoggedIn }: { resource: ResourcePreview; isL
             <Text color="gray.600">👍 {resource.views}</Text>
             <Text color="gray.600">✓ {resource.tried}</Text>
           </HStack>
-          <HStack spacing={1}>
-            <Button size="xs" variant="ghost">
-              Similar
+          {isLoggedIn ? (
+            <HStack spacing={1}>
+              <Button size="xs" variant="ghost">
+                Similar
+              </Button>
+              <Button size="xs" variant="ghost">
+                Save
+              </Button>
+            </HStack>
+          ) : (
+            <Button size="xs" variant="ghost" colorScheme="blue" onClick={handleLoginClick}>
+              Login to collaborate
             </Button>
-            <Button size="xs" variant="ghost">
-              Save
-            </Button>
-          </HStack>
+          )}
         </HStack>
       </VStack>
     </Box>

@@ -254,6 +254,7 @@ export default function HomePage() {
                 if (e.key === "Enter") {
                   const query = e.currentTarget.value;
                   navigate(`/resources?search=${encodeURIComponent(query)}`);
+                  e.currentTarget.value = "";
                 }
               }}
             />

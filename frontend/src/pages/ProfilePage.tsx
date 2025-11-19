@@ -185,31 +185,45 @@ export default function ProfilePage() {
                 </Badge>
               </HStack>
               <Text color="gray.600" fontSize="sm">
-                Lecturer | AI Facilitator
+                {user?.role === "ADMIN" ? "Administrator" : "Educator & Facilitator"}
               </Text>
-              <Text color="gray.600" fontSize="sm">
-                School of Marketing & Management
-              </Text>
+              {user?.department && (
+                <Text color="gray.600" fontSize="sm">
+                  {user.department}
+                </Text>
+              )}
             </VStack>
           </HStack>
 
-          {/* Teaching/Focus Areas */}
-          <Box mt={4}>
-            <Text fontSize="sm" fontWeight="bold" color="gray.700" mb={2}>
-              Teaching & Research
-            </Text>
-            <VStack align="flex-start" spacing={1}>
-              <HStack>
-                <Text fontSize="sm">• ISYS2001: Business Programming</Text>
-              </HStack>
-              <HStack>
-                <Text fontSize="sm">• ISYS6014: Knowledge Management & AI</Text>
-              </HStack>
-              <HStack>
-                <Text fontSize="sm">• ISYS6018: Information Security</Text>
-              </HStack>
-            </VStack>
-          </Box>
+          {/* Disciplines/Focus Areas */}
+          {(user?.disciplines && user.disciplines.length > 0 || user?.department) && (
+            <Box mt={4}>
+              <Text fontSize="sm" fontWeight="bold" color="gray.700" mb={2}>
+                Disciplines & Focus
+              </Text>
+              <VStack align="flex-start" spacing={2}>
+                {user?.department && (
+                  <Text fontSize="sm" color="gray.700">
+                    <strong>Affiliation:</strong> {user.department}
+                  </Text>
+                )}
+                {user?.disciplines && user.disciplines.length > 0 && (
+                  <Box>
+                    <Text fontSize="xs" fontWeight="semibold" color="gray.600" mb={1}>
+                      Areas of Focus:
+                    </Text>
+                    <HStack spacing={2} flexWrap="wrap">
+                      {user.disciplines.map((discipline) => (
+                        <Badge key={discipline} colorScheme="blue" variant="subtle">
+                          {discipline}
+                        </Badge>
+                      ))}
+                    </HStack>
+                  </Box>
+                )}
+              </VStack>
+            </Box>
+          )}
         </Box>
 
         <Divider />

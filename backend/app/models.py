@@ -16,6 +16,14 @@ class UserRole(str, Enum):
     ADMIN = "ADMIN"
 
 
+class Discipline(str, Enum):
+    """Disciplines/areas of focus for users."""
+
+    TEACHING = "TEACHING"
+    RESEARCH = "RESEARCH"
+    PROFESSIONAL = "PROFESSIONAL"  # Professional staff (admin, support, etc.)
+
+
 class ResourceType(str, Enum):
     """Resource content types."""
 
@@ -76,6 +84,15 @@ class User(SQLModel, table=True):
     role: UserRole = Field(default=UserRole.STAFF)
     is_active: bool = Field(default=True)
     is_approved: bool = Field(default=True)
+    disciplines: list[str] = Field(
+        default=[],
+        description="User's disciplines/areas of focus (TEACHING, RESEARCH, PROFESSIONAL)",
+        sa_column=Column(JSON),
+    )
+    department: str | None = Field(
+        default=None,
+        description="User's department or school affiliation",
+    )
     notification_prefs: dict[str, Any] = Field(
         default={
             "notify_requests": True,
@@ -407,6 +424,8 @@ class UserUpdate(SQLModel):
     """User update schema."""
 
     full_name: str | None = None
+    disciplines: list[str] | None = None
+    department: str | None = None
     notification_prefs: dict[str, Any] | None = None
 
 
@@ -417,6 +436,8 @@ class UserResponse(UserBase):
     role: UserRole
     is_active: bool
     is_approved: bool
+    disciplines: list[str]
+    department: str | None
     notification_prefs: dict[str, Any]
     created_at: datetime
 

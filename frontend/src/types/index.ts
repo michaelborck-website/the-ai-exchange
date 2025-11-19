@@ -9,6 +9,8 @@ export interface User {
   role: "ADMIN" | "STAFF";
   is_active: boolean;
   is_approved: boolean;
+  disciplines: string[];
+  department?: string;
   notification_prefs: {
     notify_requests: boolean;
     notify_solutions: boolean;
@@ -35,6 +37,8 @@ export interface RegisterRequest {
 
 export interface UserUpdateRequest {
   full_name?: string;
+  disciplines?: string[];
+  department?: string;
   notification_prefs?: {
     notify_requests?: boolean;
     notify_solutions?: boolean;

@@ -200,7 +200,7 @@ export default function ResourcesPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const isLoggedIn = !!user;
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filters, setFilters] = useState<FilterState>({
     disciplines: searchParams.get("discipline")
@@ -213,6 +213,18 @@ export default function ResourcesPage() {
     minTimeSaved: 0,
     sortBy: "newest",
   });
+
+  // Update URL params when search changes
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set("search", value);
+    } else {
+      newParams.delete("search");
+    }
+    setSearchParams(newParams);
+  };
 
   // Build API params from filters
   const apiParams = useMemo(() => ({
@@ -271,7 +283,7 @@ export default function ResourcesPage() {
           <Input
             placeholder="Search ideas, tools, or disciplines..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             borderRadius="md"
           />
         </InputGroup>

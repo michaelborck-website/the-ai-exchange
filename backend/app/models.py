@@ -57,14 +57,12 @@ class SharingLevel(str, Enum):
 class ToolCategory(str, Enum):
     """Categories for AI and related tools."""
 
-    LLM = "LLM"  # Large Language Models (Claude, ChatGPT, etc.)
-    LLM_SERVICE = "LLM_SERVICE"  # Specialized LLM services (NotebookLM, Perplexity, etc.)
+    LLM = "LLM"  # Large Language Models (Claude, ChatGPT, NotebookLM, etc.)
     CUSTOM_APP = "CUSTOM_APP"  # Custom built applications (Talk-Buddy, Study-Buddy, etc.)
     VISION = "VISION"  # Computer vision tools (DALL-E, Midjourney, etc.)
     SPEECH = "SPEECH"  # Speech/audio tools (Whisper, ElevenLabs, etc.)
-    WORKFLOW = "WORKFLOW"  # Workflow automation (Make, Zapier, etc.)
-    DATA = "DATA"  # Data analysis tools (NotebookLM, pandas, etc.)
-    DEVELOPMENT = "DEVELOPMENT"  # Development/coding tools (GitHub Copilot, Cursor, etc.)
+    WORKFLOW = "WORKFLOW"  # Workflow automation (Canvas LMS, Make, Zapier, etc.)
+    DEVELOPMENT = "DEVELOPMENT"  # Development/coding tools (Python, GitHub Copilot, Cursor, etc.)
     OTHER = "OTHER"  # Other AI-related tools
 
 

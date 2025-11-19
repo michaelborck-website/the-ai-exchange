@@ -97,7 +97,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "kumar.prof@curtin.edu.au",
         "discipline": "Economics",
-        "tools_used": {"LLM": ["Claude"], "LLM_SERVICE": ["NotebookLM"]},
+        "tools_used": {"LLM": ["Claude", "NotebookLM"]},
         "collaboration_status": "HAS_MATERIALS",
         "quick_summary": "Automatically extract and summarize key findings...",
         "time_saved_value": 4.0,

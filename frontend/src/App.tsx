@@ -20,6 +20,7 @@ import EditResourcePage from "@/pages/EditResourcePage";
 import ProfilePage from "@/pages/ProfilePage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import GettingStartedPage from "@/pages/GettingStartedPage";
+import AboutPage from "@/pages/AboutPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +47,7 @@ function App() {
               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/resources/:id" element={<ResourceDetailPage />} />
               <Route path="/getting-started" element={<GettingStartedPage />} />
+              <Route path="/about" element={<AboutPage />} />
 
               {/* Protected routes - Authentication required */}
               <Route

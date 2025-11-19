@@ -51,12 +51,14 @@ export function Layout({ children, isPublic = false }: LayoutProps) {
         { label: "Browse", href: "/resources" },
         { label: "Share Idea", href: "/resources/new" },
         { label: "Getting Started", href: "/getting-started" },
+        { label: "About", href: "/about" },
         ...(user?.role === "ADMIN" ? [{ label: "Admin", href: "/admin" }] : []),
       ]
     : [
         { label: "Home", href: "/" },
         { label: "Browse", href: "/resources" },
         { label: "Getting Started", href: "/getting-started" },
+        { label: "About", href: "/about" },
       ];
 
   const handleLogout = () => {

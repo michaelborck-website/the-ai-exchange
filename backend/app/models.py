@@ -423,7 +423,6 @@ class UserUpdate(SQLModel):
 
     full_name: str | None = None
     disciplines: list[str] | None = None
-    department: str | None = None
     notification_prefs: dict[str, Any] | None = None
 
 

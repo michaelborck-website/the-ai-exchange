@@ -27,6 +27,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { useResources } from "@/hooks/useResources";
 import { ResourceType, ResourceStatus } from "@/types/index";
 import { FilterSidebar, FilterState } from "@/components/FilterSidebar";
+import { flattenTools } from "@/lib/tools";
 
 interface ResourceCard {
   id: string;
@@ -192,7 +193,7 @@ export default function ResourcesPage() {
       title: resource.title,
       author: resource.user?.full_name || "Faculty Member",
       discipline: resource.discipline,
-      tools: resource.tools_used || [],
+      tools: flattenTools(resource.tools_used),
       quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
       timeSaved: resource.time_saved_value,
       views: resource.analytics?.view_count || 0,

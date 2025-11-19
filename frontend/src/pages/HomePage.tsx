@@ -25,6 +25,7 @@ import { SearchIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { Layout } from "@/components/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useResources } from "@/hooks/useResources";
+import { flattenTools } from "@/lib/tools";
 import { useMemo } from "react";
 
 interface DisciplineCard {
@@ -185,7 +186,7 @@ export default function HomePage() {
         title: resource.title,
         author: resource.user?.full_name || "Faculty Member",
         discipline: resource.discipline,
-        tools: resource.tools_used || [],
+        tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
         timeSaved: resource.time_saved_value,
         views: resource.analytics?.view_count || 0,
@@ -203,7 +204,7 @@ export default function HomePage() {
         title: resource.title,
         author: resource.user?.full_name || "Faculty Member",
         discipline: resource.discipline,
-        tools: resource.tools_used || [],
+        tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
         timeSaved: resource.time_saved_value,
         views: resource.analytics?.view_count || 0,

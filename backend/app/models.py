@@ -425,7 +425,7 @@ class ResourceCreate(ResourceBase):
     discipline: str | None = None
     department: str | None = None
     author_title: str | None = None
-    tools_used: list[str] = Field(default=[])
+    tools_used: dict[str, list[str]] | list[str] = Field(default={})
     collaboration_status: CollaborationStatus | None = None
     open_to_collaborate: list[str] = Field(default=[])
     time_saved_value: float | None = None
@@ -447,7 +447,7 @@ class ResourceUpdate(SQLModel):
     discipline: str | None = None
     department: str | None = None
     author_title: str | None = None
-    tools_used: list[str] | None = None
+    tools_used: dict[str, list[str]] | None = None
     collaboration_status: CollaborationStatus | None = None
     open_to_collaborate: list[str] | None = None
     time_saved_value: float | None = None
@@ -491,7 +491,7 @@ class ResourceResponse(ResourceBase):
     discipline: str | None
     department: str | None
     author_title: str | None
-    tools_used: list[str]
+    tools_used: dict[str, list[str]]
     collaboration_status: CollaborationStatus | None
     open_to_collaborate: list[str]
     time_saved_value: float | None

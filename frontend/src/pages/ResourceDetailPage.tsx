@@ -342,38 +342,6 @@ export default function ResourceDetailPage() {
                 {/* Community Tab */}
                 <TabPanel>
                   <VStack align="stretch" spacing={4}>
-                    <Box bg="blue.50" p={4} borderRadius="md">
-                      <Text fontSize="sm" color="blue.900" fontWeight="semibold" mb={3}>
-                        Engagement
-                      </Text>
-                      <SimpleGrid columns={3} gap={4}>
-                        <VStack spacing={1}>
-                          <Text fontSize="xl" fontWeight="bold" color="blue.600">
-                            {engagementStats.views}
-                          </Text>
-                          <Text fontSize="xs" color="gray.600">
-                            Views
-                          </Text>
-                        </VStack>
-                        <VStack spacing={1}>
-                          <Text fontSize="xl" fontWeight="bold" color="green.600">
-                            {engagementStats.tried}
-                          </Text>
-                          <Text fontSize="xs" color="gray.600">
-                            Tried It
-                          </Text>
-                        </VStack>
-                        <VStack spacing={1}>
-                          <Text fontSize="xl" fontWeight="bold" color="purple.600">
-                            {engagementStats.saves}
-                          </Text>
-                          <Text fontSize="xs" color="gray.600">
-                            Saved
-                          </Text>
-                        </VStack>
-                      </SimpleGrid>
-                    </Box>
-
                     <Box>
                       <Text fontSize="sm" fontWeight="bold" color="gray.600" mb={3}>
                         Similar Ideas

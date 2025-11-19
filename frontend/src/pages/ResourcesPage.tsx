@@ -226,22 +226,68 @@ export default function ResourcesPage() {
     setSearchParams(newParams);
   };
 
-  // Build API params from filters
-  const apiParams = useMemo(() => ({
-    limit: 100,
-    search: search || undefined,
-    discipline: filters.disciplines.length > 0 ? filters.disciplines[0] : undefined,
-    tools: filters.tools.length > 0 ? filters.tools.join(",") : undefined,
-    collaboration_status: filters.collaborationStatus.length > 0 ? filters.collaborationStatus[0] : undefined,
-    min_time_saved: filters.minTimeSaved > 0 ? filters.minTimeSaved : undefined,
-    sort_by: filters.sortBy,
-  }), [search, filters]);
+  // Fetch ALL resources once - this will be shared with FilterSidebar
+  // No filters applied here - we filter client-side
+  const { data: allResources = [], isLoading } = useResources({ limit: 100 });
 
-  const { data: resources = [], isLoading } = useResources(apiParams);
+  // Apply filters and search client-side for instant UI updates
+  // Only the filter sidebar & search box filtering is instant
+  const filteredResources = useMemo(() => {
+    return allResources.filter(resource => {
+      // Search filter
+      if (search) {
+        const searchLower = search.toLowerCase();
+        const matchesSearch =
+          resource.title.toLowerCase().includes(searchLower) ||
+          resource.content_text?.toLowerCase().includes(searchLower) ||
+          resource.discipline?.toLowerCase().includes(searchLower);
+        if (!matchesSearch) return false;
+      }
+
+      // Discipline filter
+      if (filters.disciplines.length > 0 && !filters.disciplines.includes(resource.discipline)) {
+        return false;
+      }
+
+      // Tool filter
+      if (filters.tools.length > 0) {
+        const hasMatchingTool = filters.tools.some(tool =>
+          resource.tools_used && Object.keys(resource.tools_used).includes(tool)
+        );
+        if (!hasMatchingTool) return false;
+      }
+
+      // Collaboration status filter
+      if (filters.collaborationStatus.length > 0 && !filters.collaborationStatus.includes(resource.collaboration_status)) {
+        return false;
+      }
+
+      // Time saved filter
+      if (filters.minTimeSaved > 0 && (resource.time_saved_value ?? 0) < filters.minTimeSaved) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [allResources, search, filters]);
+
+  // Sort resources
+  const sortedResources = useMemo(() => {
+    const sorted = [...filteredResources];
+    if (filters.sortBy === "popular") {
+      sorted.sort((a, b) => (b.analytics?.helpful_count ?? 0) - (a.analytics?.helpful_count ?? 0));
+    } else if (filters.sortBy === "most_tried") {
+      sorted.sort((a, b) => (b.analytics?.tried_count ?? 0) - (a.analytics?.tried_count ?? 0));
+    } else {
+      // newest (default)
+      sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return sorted;
+  }, [filteredResources, filters.sortBy]);
 
   // Transform API resources to card format
   const mappedResources: ResourceCard[] = useMemo(() => {
-    return resources.map(resource => ({
+    return sortedResources.map(resource => ({
       id: resource.id,
       title: resource.title,
       author: resource.user?.full_name || "Faculty Member",
@@ -254,7 +300,7 @@ export default function ResourcesPage() {
       collaborationStatus: resource.collaboration_status,
       created_at: resource.created_at,
     }));
-  }, [resources]);
+  }, [sortedResources]);
 
   return (
     <Layout>
@@ -299,6 +345,7 @@ export default function ResourcesPage() {
             <FilterSidebar
               onFiltersChange={setFilters}
               initialFilters={filters}
+              resources={allResources}
             />
           </GridItem>
 

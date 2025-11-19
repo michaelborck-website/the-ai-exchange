@@ -27,6 +27,7 @@ import { Resource } from "@/types/index";
 interface FilterSidebarProps {
   onFiltersChange: (filters: FilterState) => void;
   initialFilters?: FilterState;
+  resources?: Resource[]; // Optional: if provided, extracts filters from these resources instead of fetching
 }
 
 export interface FilterState {
@@ -81,8 +82,16 @@ function formatCategoryName(category: string): string {
 export function FilterSidebar({
   onFiltersChange,
   initialFilters,
+  resources: propResources,
 }: FilterSidebarProps) {
-  const { data: resources = [], isLoading } = useResources({ limit: 100 });
+  // If resources are passed as prop, use those (no separate network request)
+  // Otherwise, fetch them (for backward compatibility)
+  const { data: fetchedResources = [], isLoading: isFetching } = useResources(
+    propResources ? undefined : { limit: 100 }
+  );
+
+  const resources = propResources || fetchedResources;
+  const isLoading = propResources ? false : isFetching;
 
   // Extract unique disciplines and tool categories from resources
   const disciplines = useMemo(() => extractDisciplines(resources), [resources]);

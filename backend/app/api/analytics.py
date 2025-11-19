@@ -12,6 +12,7 @@ from app.models import (
     ResourceAnalyticsResponse,
     User,
     UserRole,
+    UserSavedResource,
 )
 from app.services.database import get_session
 
@@ -136,12 +137,12 @@ def track_resource_tried(
 
 
 @router.post("/resources/{resource_id}/save", response_model=dict)
-def track_resource_save(
+def toggle_resource_save(
     resource_id: UUID,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ) -> dict:
-    """Mark that a user saved/bookmarked a resource.
+    """Toggle save status for a resource (save/unsave).
 
     Args:
         resource_id: Resource ID being saved
@@ -149,7 +150,7 @@ def track_resource_save(
         session: Database session
 
     Returns:
-        Updated save count
+        Updated save count and status
 
     Raises:
         HTTPException: If resource not found
@@ -162,11 +163,31 @@ def track_resource_save(
             detail="Resource not found",
         )
 
+    # Check if already saved
+    existing = session.exec(
+        select(UserSavedResource).where(
+            (UserSavedResource.user_id == current_user.id)
+            & (UserSavedResource.resource_id == resource_id)
+        )
+    ).first()
+
     # Get or create analytics
     analytics = get_or_create_analytics(resource_id, session)
 
-    # Increment save count
-    analytics.save_count += 1
+    if existing:
+        # Remove save
+        session.delete(existing)
+        analytics.save_count = max(0, analytics.save_count - 1)
+        is_saved = False
+    else:
+        # Add save
+        saved = UserSavedResource(
+            user_id=current_user.id,
+            resource_id=resource_id,
+        )
+        session.add(saved)
+        analytics.save_count += 1
+        is_saved = True
 
     session.add(analytics)
     session.commit()
@@ -174,8 +195,9 @@ def track_resource_save(
 
     return {
         "resource_id": str(resource_id),
+        "is_saved": is_saved,
         "save_count": analytics.save_count,
-        "status": "tracked",
+        "status": "saved" if is_saved else "unsaved",
     }
 
 
@@ -210,6 +232,97 @@ def get_resource_analytics(
     analytics = get_or_create_analytics(resource_id, session)
 
     return analytics
+
+
+@router.get("/resources/{resource_id}/is-saved", response_model=dict)
+def check_resource_saved(
+    resource_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+) -> dict:
+    """Check if current user has saved a resource.
+
+    Args:
+        resource_id: Resource ID to check
+        current_user: Current authenticated user
+        session: Database session
+
+    Returns:
+        Dictionary with is_saved boolean
+
+    Raises:
+        HTTPException: If resource not found
+    """
+    # Verify resource exists
+    resource = session.exec(select(Resource).where(Resource.id == resource_id)).first()
+    if not resource:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Resource not found",
+        )
+
+    # Check if saved
+    is_saved = session.exec(
+        select(UserSavedResource).where(
+            (UserSavedResource.user_id == current_user.id)
+            & (UserSavedResource.resource_id == resource_id)
+        )
+    ).first() is not None
+
+    return {
+        "resource_id": str(resource_id),
+        "is_saved": is_saved,
+    }
+
+
+@router.get("/users/me/saved-resources", response_model=list[dict])
+def get_user_saved_resources(
+    current_user: User = Depends(get_current_user),
+    skip: int = 0,
+    limit: int = 100,
+    session: Session = Depends(get_session),
+) -> list[dict]:
+    """Get all resources saved by the current user.
+
+    Args:
+        current_user: Current authenticated user
+        skip: Number of results to skip
+        limit: Maximum number of results
+        session: Database session
+
+    Returns:
+        List of saved resources with user info
+    """
+    # Get saved resource IDs
+    saved = session.exec(
+        select(UserSavedResource)
+        .where(UserSavedResource.user_id == current_user.id)
+        .order_by(UserSavedResource.saved_at.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
+    # Fetch the actual resources
+    from app.models import ResourceResponse
+
+    result = []
+    for saved_record in saved:
+        resource = session.get(Resource, saved_record.resource_id)
+        if resource and not resource.is_hidden:
+            # Get user info
+            user = session.get(User, resource.user_id)
+            resource_dict = {
+                **ResourceResponse.model_validate(resource).model_dump(),
+                "user": {
+                    "id": str(user.id),
+                    "full_name": user.full_name,
+                    "email": user.email,
+                } if user else None,
+                "saved_at": saved_record.saved_at.isoformat(),
+            }
+            result.append(resource_dict)
+
+    return result
 
 
 # Platform Analytics Endpoints

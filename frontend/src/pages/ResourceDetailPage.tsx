@@ -27,6 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useResource, useDeleteResource, useResources } from "@/hooks/useResources";
+import { useSaveResource, useTriedResource, useIsResourceSaved } from "@/hooks/useEngagement";
 import { CollaborationModal } from "@/components/CollaborationModal";
 import { useState, useMemo } from "react";
 
@@ -40,8 +41,11 @@ export default function ResourceDetailPage() {
   const deleteResourceMutation = useDeleteResource();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [hasTriedIt, setHasTriedIt] = useState(false);
-  const [hasSaved, setHasSaved] = useState(false);
+  // Engagement hooks
+  const saveResourceMutation = useSaveResource();
+  const triedResourceMutation = useTriedResource();
+  const { data: isSavedData } = useIsResourceSaved(id || "");
+  const hasSaved = isSavedData ?? false;
 
   // Get engagement stats from resource analytics
   const engagementStats = useMemo(() => {
@@ -97,26 +101,42 @@ export default function ResourceDetailPage() {
     }
   };
 
-  const handleTried = () => {
-    setHasTriedIt(!hasTriedIt);
-    toast({
-      title: hasTriedIt ? "Removed from tried" : "Marked as tried!",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-    // TODO: Save to backend analytics
+  const handleTried = async () => {
+    try {
+      await triedResourceMutation.mutateAsync(id || "");
+      toast({
+        title: "Marked as tried!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to mark as tried",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
-  const handleSave = () => {
-    setHasSaved(!hasSaved);
-    toast({
-      title: hasSaved ? "Removed from saved" : "Saved!",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-    // TODO: Save to backend analytics
+  const handleSave = async () => {
+    try {
+      await saveResourceMutation.mutateAsync(id || "");
+      toast({
+        title: hasSaved ? "Removed from saved" : "Saved!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to save resource",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   if (isLoading) {
@@ -227,16 +247,18 @@ export default function ResourceDetailPage() {
                   variant={hasSaved ? "solid" : "outline"}
                   colorScheme="blue"
                   onClick={handleSave}
+                  isLoading={saveResourceMutation.isPending}
                 >
                   {hasSaved ? "✓ Saved" : "Save"}
                 </Button>
                 <Button
                   size="sm"
-                  variant={hasTriedIt ? "solid" : "outline"}
+                  variant="outline"
                   colorScheme="green"
                   onClick={handleTried}
+                  isLoading={triedResourceMutation.isPending}
                 >
-                  {hasTriedIt ? "✓ Tried It" : "Mark as Tried"}
+                  Mark as Tried
                 </Button>
               </HStack>
             )}

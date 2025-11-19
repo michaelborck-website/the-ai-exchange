@@ -32,6 +32,76 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useUpdateProfile } from "@/hooks/useAuth";
 import { useResources } from "@/hooks/useResources";
+import { useUserSavedResources } from "@/hooks/useEngagement";
+
+function SavedIdeasSection() {
+  const navigate = useNavigate();
+  const { data: savedResources = [], isLoading } = useUserSavedResources();
+
+  if (isLoading) {
+    return (
+      <Center py={12}>
+        <Spinner />
+      </Center>
+    );
+  }
+
+  if (savedResources.length === 0) {
+    return (
+      <Box bg="gray.50" p={8} borderRadius="md" textAlign="center">
+        <Text color="gray.600">
+          You haven't saved any ideas yet.{" "}
+          <Button
+            variant="link"
+            colorScheme="blue"
+            onClick={() => navigate("/resources")}
+          >
+            Browse and save ideas →
+          </Button>
+        </Text>
+      </Box>
+    );
+  }
+
+  return (
+    <VStack align="stretch" spacing={4}>
+      <Box bg="blue.50" p={4} borderRadius="md" border="1px" borderColor="blue.200">
+        <Text fontSize="sm" color="blue.900">
+          You've saved <strong>{savedResources.length} idea{savedResources.length !== 1 ? "s" : ""}</strong> to your library.
+        </Text>
+      </Box>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+        {savedResources.map((resource: any) => (
+          <Box
+            key={resource.id}
+            bg="white"
+            border="1px"
+            borderColor="gray.200"
+            borderRadius="md"
+            p={4}
+            cursor="pointer"
+            _hover={{ boxShadow: "md" }}
+            transition="all 0.2s"
+            onClick={() => navigate(`/resources/${resource.id}`)}
+          >
+            <VStack align="flex-start" spacing={3}>
+              <HStack>
+                <Badge colorScheme="blue" variant="subtle">
+                  {resource.discipline || "General"}
+                </Badge>
+              </HStack>
+              <Heading size="sm">{resource.title}</Heading>
+              <Divider />
+              <Text fontSize="xs" color="gray.600">
+                Saved {new Date(resource.saved_at).toLocaleDateString()}
+              </Text>
+            </VStack>
+          </Box>
+        ))}
+      </SimpleGrid>
+    </VStack>
+  );
+}
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -226,16 +296,8 @@ export default function ProfilePage() {
                   <Heading size="md" mb={4}>
                     Saved Ideas
                   </Heading>
-                  <Box bg="blue.50" p={4} borderRadius="md" border="1px" borderColor="blue.200">
-                    <Text fontSize="sm" color="blue.900">
-                      You've saved <strong>{userContributions.length} idea{userContributions.length !== 1 ? "s" : ""}</strong> to your library.{" "}
-                      {userContributions.length > 0 && (
-                        <Button variant="link" colorScheme="blue" size="sm">
-                          View your library →
-                        </Button>
-                      )}
-                    </Text>
-                  </Box>
+                  {/* Get saved resources hook */}
+                  <SavedIdeasSection />
                 </Box>
               </VStack>
             </TabPanel>

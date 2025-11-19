@@ -355,6 +355,23 @@ class ResourceAnalytics(SQLModel, table=True):
         return f"ResourceAnalytics(resource_id={self.resource_id}, views={self.view_count})"
 
 
+class UserSavedResource(SQLModel, table=True):
+    """Model tracking which users saved which resources."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: UUID = Field(foreign_key="user.id", index=True)
+    resource_id: UUID = Field(foreign_key="resource.id", index=True)
+    saved_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True), index=True),
+        description="When the resource was saved",
+    )
+
+    def __repr__(self) -> str:
+        """String representation."""
+        return f"UserSavedResource(user_id={self.user_id}, resource_id={self.resource_id})"
+
+
 # Response schemas (for API)
 class UserBase(SQLModel):
     """Base user schema."""

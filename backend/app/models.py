@@ -19,6 +19,7 @@ class UserRole(str, Enum):
 class Discipline(str, Enum):
     """Business disciplines/schools for users."""
 
+    ALL = "ALL"  # User works across all disciplines
     MARKETING = "MARKETING"
     BUSINESS = "BUSINESS"
     SUPPLY_CHAIN = "SUPPLY_CHAIN"

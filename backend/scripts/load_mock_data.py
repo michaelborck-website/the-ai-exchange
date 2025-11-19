@@ -65,6 +65,22 @@ MOCK_USERS = [
         "is_active": True,
         "disciplines": ["SUPPLY_CHAIN"],
     },
+    {
+        "email": "admin@curtin.edu.au",
+        "full_name": "Administrator",
+        "password": "TestPassword123!",
+        "role": "ADMIN",
+        "is_active": True,
+        "disciplines": ["ALL"],
+    },
+    {
+        "email": "facilitator@curtin.edu.au",
+        "full_name": "Faculty Facilitator",
+        "password": "TestPassword123!",
+        "role": "STAFF",
+        "is_active": True,
+        "disciplines": ["ALL"],
+    },
 ]
 
 MOCK_RESOURCES = [

@@ -25,7 +25,7 @@ import {
 import { useCreateResource } from "@/hooks/useResources";
 import { ResourceType } from "@/types/index";
 
-const DISCIPLINES = ["MARKETING", "BUSINESS", "SUPPLY_CHAIN", "HR", "TOURISM", "ACCOUNTING", "LAW"];
+const DISCIPLINES = ["ALL", "MARKETING", "BUSINESS", "SUPPLY_CHAIN", "HR", "TOURISM", "ACCOUNTING", "LAW"];
 const COLLABORATION_STATUSES = ["SEEKING", "PROVEN", "HAS_MATERIALS"];
 const TOOL_CATEGORIES = ["LLM", "CUSTOM_APP", "VISION", "SPEECH", "WORKFLOW", "DEVELOPMENT", "OTHER"];
 

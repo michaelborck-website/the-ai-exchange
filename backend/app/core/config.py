@@ -1,5 +1,6 @@
 """Application configuration from environment variables."""
 
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -15,8 +16,10 @@ class Settings(BaseSettings):
     secret_key: str = "change-me-to-secure-random-string"
     debug: bool = False
 
-    # Database
-    database_url: str = "sqlite:///./ai_exchange.db"
+    # Database - uses absolute path relative to this config file location
+    # This ensures the database is created in the backend directory,
+    # regardless of where the application is run from
+    database_url: str = f"sqlite:///{Path(__file__).parent.parent.parent / 'ai_exchange.db'}"
 
     # Authentication
     allowed_domains: list[str] = ["curtin.edu.au"]

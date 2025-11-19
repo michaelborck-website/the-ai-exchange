@@ -55,6 +55,10 @@ export const useSaveResource = () => {
       queryClient.invalidateQueries({
         queryKey: ["isResourceSaved", data.resource_id],
       });
+      // Invalidate the individual resource query to refresh engagement stats
+      queryClient.invalidateQueries({
+        queryKey: ["resource", data.resource_id],
+      });
     },
   });
 };
@@ -88,9 +92,13 @@ export const useTriedResource = () => {
       );
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate resource list to refresh analytics
       queryClient.invalidateQueries({ queryKey: ["resources"] });
+      // Invalidate the individual resource query to refresh engagement stats
+      queryClient.invalidateQueries({
+        queryKey: ["resource", data.resource_id],
+      });
     },
   });
 };

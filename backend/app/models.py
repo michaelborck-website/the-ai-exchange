@@ -54,6 +54,20 @@ class SharingLevel(str, Enum):
     PUBLIC = "PUBLIC"
 
 
+class ToolCategory(str, Enum):
+    """Categories for AI and related tools."""
+
+    LLM = "LLM"  # Large Language Models (Claude, ChatGPT, etc.)
+    LLM_SERVICE = "LLM_SERVICE"  # Specialized LLM services (NotebookLM, Perplexity, etc.)
+    CUSTOM_APP = "CUSTOM_APP"  # Custom built applications (Talk-Buddy, Study-Buddy, etc.)
+    VISION = "VISION"  # Computer vision tools (DALL-E, Midjourney, etc.)
+    SPEECH = "SPEECH"  # Speech/audio tools (Whisper, ElevenLabs, etc.)
+    WORKFLOW = "WORKFLOW"  # Workflow automation (Make, Zapier, etc.)
+    DATA = "DATA"  # Data analysis tools (NotebookLM, pandas, etc.)
+    DEVELOPMENT = "DEVELOPMENT"  # Development/coding tools (GitHub Copilot, Cursor, etc.)
+    OTHER = "OTHER"  # Other AI-related tools
+
+
 class User(SQLModel, table=True):
     """User model."""
 
@@ -137,9 +151,15 @@ class Resource(SQLModel, table=True):
         default=None,
         description="e.g., Senior Lecturer, Associate Professor",
     )
-    tools_used: list[str] = Field(
+    tools_used: dict[str, list[str]] = Field(
+        default={},
+        description="AI and related tools by category. e.g., {'LLM': ['Claude', 'ChatGPT'], 'CUSTOM_APP': ['Talk-Buddy']}",
+        sa_column=Column(JSON),
+    )
+    # Legacy: flat list of tool names for backward compatibility and simple display
+    tools_used_flat: list[str] = Field(
         default=[],
-        description="AI tools used, e.g., ChatGPT, Claude, Copilot",
+        description="Flattened list of all tools (for search/display). Auto-generated from tools_used.",
         sa_column=Column(JSON),
     )
     collaboration_status: CollaborationStatus | None = Field(

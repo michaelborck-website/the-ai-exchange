@@ -69,11 +69,10 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "sarah.chen@curtin.edu.au",
         "discipline": "Marketing",
-        "tools_used": ["Claude", "ChatGPT"],
+        "tools_used": {"LLM": ["Claude", "ChatGPT"]},
         "collaboration_status": "SEEKING",
         "quick_summary": "Generates industry-specific cases aligned with learning outcomes...",
         "time_saved_value": 3.0,
-        "time_saved_frequency": "per_week",
         "time_saved_frequency": "per_week",
         "system_tags": ["AI", "Education", "Case Studies", "Marketing"],
     },
@@ -84,7 +83,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "mike.torres@curtin.edu.au",
         "discipline": "Management",
-        "tools_used": ["ChatGPT"],
+        "tools_used": {"LLM": ["ChatGPT"]},
         "collaboration_status": "PROVEN",
         "quick_summary": "Create consistent assessment criteria in seconds...",
         "time_saved_value": 2.0,
@@ -98,7 +97,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "kumar.prof@curtin.edu.au",
         "discipline": "Economics",
-        "tools_used": ["Claude"],
+        "tools_used": {"LLM": ["Claude"]},
         "collaboration_status": "HAS_MATERIALS",
         "quick_summary": "Automatically extract and summarize key findings...",
         "time_saved_value": 4.0,
@@ -112,7 +111,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "jennifer.lee@curtin.edu.au",
         "discipline": "HR",
-        "tools_used": ["ChatGPT", "Canvas LMS"],
+        "tools_used": {"LLM": ["ChatGPT"], "WORKFLOW": ["Canvas LMS"]},
         "collaboration_status": "SEEKING",
         "quick_summary": "AI-assisted feedback generation for recorded presentations...",
         "time_saved_value": 2.5,
@@ -126,7 +125,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "alex.patel@curtin.edu.au",
         "discipline": "Finance",
-        "tools_used": ["Claude"],
+        "tools_used": {"LLM": ["Claude"]},
         "collaboration_status": "PROVEN",
         "quick_summary": "Structured templates for peer assessment with AI guidance...",
         "time_saved_value": 1.5,
@@ -140,7 +139,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "sarah.chen@curtin.edu.au",
         "discipline": "Management",
-        "tools_used": ["GPT-4"],
+        "tools_used": {"LLM": ["GPT-4"]},
         "collaboration_status": "HAS_MATERIALS",
         "quick_summary": "Generate thought-provoking questions for class discussions...",
         "time_saved_value": 1.0,
@@ -154,7 +153,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "mike.torres@curtin.edu.au",
         "discipline": "Analytics",
-        "tools_used": ["Claude", "ChatGPT"],
+        "tools_used": {"LLM": ["Claude", "ChatGPT"]},
         "collaboration_status": "SEEKING",
         "quick_summary": "Quickly generate exam questions from course materials...",
         "time_saved_value": 2.5,
@@ -168,7 +167,7 @@ MOCK_RESOURCES = [
         "status": "OPEN",
         "user_email": "kumar.prof@curtin.edu.au",
         "discipline": "Economics",
-        "tools_used": ["Claude"],
+        "tools_used": {"LLM": ["Claude"]},
         "collaboration_status": "PROVEN",
         "quick_summary": "Use AI to structure and refine research proposals...",
         "time_saved_value": 3.5,
@@ -187,6 +186,14 @@ MOCK_ANALYTICS = [
     {"resource_index": 6, "views": 176, "saves": 42, "tries": 19},
     {"resource_index": 7, "views": 267, "saves": 63, "tries": 28},
 ]
+
+
+def flatten_tools(tools_used: dict[str, list[str]]) -> list[str]:
+    """Flatten categorized tools into a single list."""
+    flat = []
+    for category, tools in tools_used.items():
+        flat.extend(tools)
+    return flat
 
 
 def load_mock_data():
@@ -228,6 +235,9 @@ def load_mock_data():
         mock_resources = []
         for resource_data in MOCK_RESOURCES:
             user = mock_users_map[resource_data.pop("user_email")]
+            # Auto-populate tools_used_flat from tools_used
+            if "tools_used" in resource_data and isinstance(resource_data["tools_used"], dict):
+                resource_data["tools_used_flat"] = flatten_tools(resource_data["tools_used"])
             resource = Resource(
                 **resource_data,
                 user_id=user.id,

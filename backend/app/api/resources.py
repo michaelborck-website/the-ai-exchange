@@ -47,26 +47,38 @@ def list_resources(
     tag: str | None = Query(None),
     search: str | None = Query(None),
     status_filter: ResourceStatus | None = Query(None, alias="status"),
+    # New collaboration and metadata filters
+    discipline: str | None = Query(None, description="e.g., Marketing, Management"),
+    tools: str | None = Query(None, description="Comma-separated list of tools"),
+    collaboration_status: str | None = Query(None, description="SEEKING, PROVEN, HAS_MATERIALS"),
+    min_time_saved: float | None = Query(None, description="Minimum hours saved"),
+    sort_by: str = Query("newest", regex="^(newest|popular|most_tried)$"),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
     session: Session = Depends(get_session),
 ) -> list[ResourceResponse]:
-    """Get list of resources with optional filtering.
+    """Get list of resources with advanced filtering.
 
     Args:
         type_filter: Filter by resource type
         tag: Filter by tag
         search: Search in title and content
         status_filter: Filter by status (for requests)
+        discipline: Filter by discipline (e.g., Marketing, Management)
+        tools: Filter by tools (comma-separated: ChatGPT,Claude)
+        collaboration_status: Filter by collaboration status
+        min_time_saved: Filter for quick wins (minimum hours saved)
+        sort_by: Sort order (newest, popular, most_tried)
         skip: Number of resources to skip
         limit: Maximum resources to return
         session: Database session
 
     Returns:
-        List of resources
+        List of resources matching filters
     """
     query = select(Resource).where(Resource.is_hidden.is_(False))
 
+    # Basic filters
     if type_filter:
         query = query.where(Resource.type == type_filter)
 
@@ -74,8 +86,7 @@ def list_resources(
         query = query.where(Resource.status == status_filter)
 
     if tag:
-        # Simple tag filter (contains)
-        # In production, this would be more sophisticated
+        # Filter by tag (contains)
         query = query.where(
             (Resource.system_tags.contains([tag]))
             | (Resource.user_tags.contains([tag]))
@@ -87,10 +98,35 @@ def list_resources(
         query = query.where(
             (Resource.title.ilike(search_term))
             | (Resource.content_text.ilike(search_term))
+            | (Resource.quick_summary.ilike(search_term))
         )
 
-    # Order by creation date (newest first)
-    query = query.order_by(Resource.created_at.desc())
+    # New collaboration and metadata filters
+    if discipline:
+        query = query.where(Resource.discipline == discipline)
+
+    if tools:
+        # Parse comma-separated tools
+        tool_list = [t.strip() for t in tools.split(",")]
+        # Match resources that use any of these tools
+        for tool in tool_list:
+            query = query.where(Resource.tools_used.contains([tool]))
+
+    if collaboration_status:
+        query = query.where(Resource.collaboration_status == collaboration_status)
+
+    if min_time_saved is not None:
+        query = query.where(Resource.time_saved_value >= min_time_saved)
+
+    # Sorting
+    if sort_by == "newest":
+        query = query.order_by(Resource.created_at.desc())
+    elif sort_by == "popular":
+        # Sort by helpful votes (would join with analytics in production)
+        query = query.order_by(Resource.created_at.desc())
+    elif sort_by == "most_tried":
+        # Sort by most tried (would join with analytics in production)
+        query = query.order_by(Resource.created_at.desc())
 
     resources = session.exec(query.offset(skip).limit(limit)).all()
     return resources

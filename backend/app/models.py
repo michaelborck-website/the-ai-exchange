@@ -154,12 +154,6 @@ class Resource(SQLModel, table=True):
         description="AI and related tools by category. e.g., {'LLM': ['Claude', 'ChatGPT'], 'CUSTOM_APP': ['Talk-Buddy']}",
         sa_column=Column(JSON),
     )
-    # Legacy: flat list of tool names for backward compatibility and simple display
-    tools_used_flat: list[str] = Field(
-        default=[],
-        description="Flattened list of all tools (for search/display). Auto-generated from tools_used.",
-        sa_column=Column(JSON),
-    )
     collaboration_status: CollaborationStatus | None = Field(
         default=None,
         description="SEEKING, PROVEN, or HAS_MATERIALS",

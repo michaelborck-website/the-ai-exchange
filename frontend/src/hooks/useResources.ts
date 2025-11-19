@@ -27,7 +27,11 @@ export function useResources(params?: {
   return useQuery({
     queryKey,
     queryFn: () => apiClient.listResources(params),
-    staleTime: 0, // Always refetch fresh data to get latest resources with all fields
+    // Use staleTime instead of 0 to avoid constant refetches
+    // This allows React Query to deduplicate requests automatically
+    // Data is fresh enough for 30 seconds, then can be refetched if explicitly requested
+    staleTime: 30000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep unused queries for 5 minutes
   });
 }
 

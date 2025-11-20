@@ -245,7 +245,7 @@ export default function ResourcesPage() {
       }
 
       // Discipline filter
-      if (filters.disciplines.length > 0 && !filters.disciplines.includes(resource.discipline)) {
+      if (filters.disciplines.length > 0 && resource.discipline && !filters.disciplines.includes(resource.discipline)) {
         return false;
       }
 
@@ -258,7 +258,7 @@ export default function ResourcesPage() {
       }
 
       // Collaboration status filter
-      if (filters.collaborationStatus.length > 0 && !filters.collaborationStatus.includes(resource.collaboration_status)) {
+      if (filters.collaborationStatus.length > 0 && resource.collaboration_status && !filters.collaborationStatus.includes(resource.collaboration_status)) {
         return false;
       }
 

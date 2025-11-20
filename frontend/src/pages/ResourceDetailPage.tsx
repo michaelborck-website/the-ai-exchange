@@ -17,7 +17,6 @@ import {
   useToast,
   Grid,
   GridItem,
-  SimpleGrid,
   Tabs,
   TabList,
   TabPanels,
@@ -468,11 +467,6 @@ export default function ResourceDetailPage() {
                   <Text fontSize="sm" fontWeight="semibold">
                     {resource?.user?.full_name || "Faculty Member"}
                   </Text>
-                  {resource?.department && (
-                    <Text fontSize="xs" color="gray.600">
-                      {resource.department}
-                    </Text>
-                  )}
                   <Button
                     size="xs"
                     variant="outline"

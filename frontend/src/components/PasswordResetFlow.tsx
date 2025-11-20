@@ -10,16 +10,13 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   ModalCloseButton,
   Button,
   Input,
   VStack,
-  HStack,
   Text,
   Alert,
   AlertIcon,
-  useToast,
   Box,
   Heading,
   Divider,
@@ -27,8 +24,7 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { getErrorMessage } from "@/lib/api";
-import api from "@/lib/api";
+import { getErrorMessage, api } from "@/lib/api";
 
 interface PasswordResetFlowProps {
   isOpen: boolean;
@@ -43,7 +39,6 @@ export default function PasswordResetFlow({
   onClose,
   onSuccess,
 }: PasswordResetFlowProps) {
-  const toast = useToast();
   const queryClient = useQueryClient();
 
   const [currentStep, setCurrentStep] = useState<Step>("request");

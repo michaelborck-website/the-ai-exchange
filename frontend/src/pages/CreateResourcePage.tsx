@@ -8,7 +8,6 @@ import { Layout } from "@/components/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import {
   VStack,
-  HStack,
   Heading,
   Input,
   Textarea,
@@ -26,7 +25,6 @@ import { useCreateResource } from "@/hooks/useResources";
 import { ResourceType } from "@/types/index";
 
 const DISCIPLINES = ["ALL", "MARKETING", "BUSINESS", "SUPPLY_CHAIN", "HR", "TOURISM", "ACCOUNTING", "LAW"];
-const COLLABORATION_STATUSES = ["SEEKING", "PROVEN", "HAS_MATERIALS"];
 const TOOL_CATEGORIES = ["LLM", "CUSTOM_APP", "VISION", "SPEECH", "WORKFLOW", "DEVELOPMENT", "OTHER"];
 
 export default function CreateResourcePage() {

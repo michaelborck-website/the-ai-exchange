@@ -114,10 +114,8 @@ function ResourceCard({ resource, isLoggedIn }: { resource: any; isLoggedIn: boo
                 variant="ghost"
                 colorScheme="blue"
                 onClick={() => {
-                  // Find discipline from the full resource data
-                  const fullResource = allResources.find(r => r.id === resource.id);
-                  if (fullResource?.discipline) {
-                    navigate(`/resources?discipline=${fullResource.discipline}`);
+                  if (resource.discipline) {
+                    navigate(`/resources?discipline=${resource.discipline}`);
                   }
                 }}
               >

@@ -23,7 +23,8 @@ from app.core.security import hash_password
 from datetime import datetime, timedelta
 
 # Mock data - only STAFF users for beta testing
-# ADMIN accounts should be created manually as needed, not hardcoded in mock data
+# ADMIN accounts should be created using init_db.py, not hardcoded in mock data
+# The first registered user automatically gets ADMIN role via auth.py register endpoint
 MOCK_USERS = [
     {
         "email": "sarah.chen@curtin.edu.au",
@@ -64,14 +65,6 @@ MOCK_USERS = [
         "role": "STAFF",
         "is_active": True,
         "disciplines": ["SUPPLY_CHAIN"],
-    },
-    {
-        "email": "admin@curtin.edu.au",
-        "full_name": "Administrator",
-        "password": "TestPassword123!",
-        "role": "ADMIN",
-        "is_active": True,
-        "disciplines": ["ALL"],
     },
     {
         "email": "facilitator@curtin.edu.au",
@@ -281,6 +274,7 @@ def load_mock_data():
         print("\n📋 Test Accounts (all with password: TestPassword123!):")
         for user_data in MOCK_USERS:
             print(f"   • {user_data['email']}")
+        print("\n📌 To create an admin user, run: python init_db.py")
 
         return True
 

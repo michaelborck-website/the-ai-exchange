@@ -32,10 +32,23 @@ interface DisciplineCard {
 
 function ResourceCard({ resource, isLoggedIn }: { resource: any; isLoggedIn: boolean }) {
   const navigate = useNavigate();
+  const { useSaveResource, useIsResourceSaved } = require("@/hooks/useEngagement");
+  const saveResourceMutation = useSaveResource();
+  const { data: isSavedData } = useIsResourceSaved(resource.id);
+  const hasSaved = isSavedData ?? false;
 
   const handleLoginClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate("/login");
+  };
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await saveResourceMutation.mutateAsync(resource.id);
+    } catch (error) {
+      console.error("Failed to save resource:", error);
+    }
   };
 
   return (
@@ -100,31 +113,23 @@ function ResourceCard({ resource, isLoggedIn }: { resource: any; isLoggedIn: boo
             })}
           </Text>
           <HStack spacing={2}>
-            <Text title="Views">👍 {resource.views}</Text>
-            <Text title="Tried It">✓ {resource.tried}</Text>
+            <Text title="Views">👁️ {resource.views}</Text>
+            <Text title="People who tried it">🧪 {resource.tried}</Text>
           </HStack>
         </HStack>
 
         {/* Action buttons */}
         <HStack spacing={3} fontSize="sm" width="full" justify="flex-end" pt={2} borderTop="1px" borderColor="gray.100">
           {isLoggedIn ? (
-            <HStack spacing={1}>
-              <Button
-                size="xs"
-                variant="ghost"
-                colorScheme="blue"
-                onClick={() => {
-                  if (resource.discipline) {
-                    navigate(`/resources?discipline=${resource.discipline}`);
-                  }
-                }}
-              >
-                Similar Ideas
-              </Button>
-              <Button size="xs" variant="ghost" colorScheme="blue">
-                Save
-              </Button>
-            </HStack>
+            <Button
+              size="xs"
+              variant={hasSaved ? "solid" : "ghost"}
+              colorScheme="blue"
+              onClick={handleSave}
+              isLoading={saveResourceMutation.isPending}
+            >
+              {hasSaved ? "✓ Saved" : "Save"}
+            </Button>
           ) : (
             <Button size="xs" variant="ghost" colorScheme="blue" onClick={handleLoginClick}>
               Login to collaborate

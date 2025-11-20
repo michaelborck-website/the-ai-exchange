@@ -439,19 +439,19 @@ export default function ResourceDetailPage() {
               </Text>
               <VStack align="stretch" spacing={3}>
                 <HStack justify="space-between">
-                  <Text fontSize="sm">Views</Text>
+                  <Text fontSize="sm">👁️ Views</Text>
                   <Text fontSize="sm" fontWeight="bold">
                     {engagementStats.views}
                   </Text>
                 </HStack>
                 <HStack justify="space-between">
-                  <Text fontSize="sm">Tried It</Text>
+                  <Text fontSize="sm">🧪 Tried It</Text>
                   <Text fontSize="sm" fontWeight="bold">
                     {engagementStats.tried}
                   </Text>
                 </HStack>
                 <HStack justify="space-between">
-                  <Text fontSize="sm">Saved</Text>
+                  <Text fontSize="sm">📌 Saved</Text>
                   <Text fontSize="sm" fontWeight="bold">
                     {engagementStats.saves}
                   </Text>

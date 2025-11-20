@@ -99,6 +99,10 @@ export const useTriedResource = () => {
       queryClient.invalidateQueries({
         queryKey: ["resource", data.resource_id],
       });
+      // Invalidate the users who tried it list for Community tab
+      queryClient.invalidateQueries({
+        queryKey: ["resourceUsersTried", data.resource_id],
+      });
     },
   });
 };

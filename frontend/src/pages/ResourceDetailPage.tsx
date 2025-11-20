@@ -488,9 +488,9 @@ export default function ResourceDetailPage() {
         isOpen={isOpen}
         onClose={onClose}
         resourceTitle={resource.title}
-        authorName="Dr. Sarah Chen"
-        authorEmail="sarah.chen@school.edu"
-        collaborationStatus="SEEKING"
+        authorName={resource.user?.full_name || "Faculty Member"}
+        authorEmail={resource.user?.email || ""}
+        collaborationStatus={resource.collaboration_status || "SEEKING"}
       />
     </Layout>
   );

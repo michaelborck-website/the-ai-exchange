@@ -52,7 +52,7 @@ def list_resources(
     tools: str | None = Query(None, description="Comma-separated list of tools"),
     collaboration_status: str | None = Query(None, description="SEEKING, PROVEN, HAS_MATERIALS"),
     min_time_saved: float | None = Query(None, description="Minimum hours saved"),
-    sort_by: str = Query("newest", regex="^(newest|popular|most_tried)$"),
+    sort_by: str = Query("newest", pattern="^(newest|popular|most_tried)$"),
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
     session: Session = Depends(get_session),

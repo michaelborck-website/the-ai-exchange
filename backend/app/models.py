@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any
 from uuid import UUID, uuid4
 
+from pydantic import ConfigDict
 from sqlalchemy import JSON
 from sqlmodel import Column, DateTime, Field, SQLModel, Text
 
@@ -437,10 +438,7 @@ class UserResponse(UserBase):
     notification_prefs: dict[str, Any]
     created_at: datetime
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserPublic(SQLModel):
@@ -547,10 +545,7 @@ class ResourceResponse(ResourceBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ResourceWithAuthor(ResourceResponse):
@@ -573,10 +568,7 @@ class SubscriptionResponse(SQLModel):
     user_id: UUID
     tag: str
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Comment schemas
@@ -605,10 +597,7 @@ class CommentResponse(SQLModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Prompt schemas
@@ -650,10 +639,7 @@ class PromptResponse(SQLModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Collection schemas
@@ -688,10 +674,7 @@ class CollectionResponse(SQLModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Analytics schemas
@@ -708,7 +691,4 @@ class ResourceAnalyticsResponse(SQLModel):
     helpful_count: int
     last_viewed: datetime | None
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -190,8 +190,8 @@ export default function ResourceDetailPage() {
                 </HStack>
               </VStack>
 
-              {/* Author info - only for logged-in users */}
-              {user && (
+              {/* Author info - only for logged-in users if not anonymous */}
+              {user && !resource.is_anonymous && (
                 <HStack spacing={3} width="full" justify="space-between">
                   <VStack align="flex-start" spacing={1}>
                     <Text fontSize="sm" fontWeight="semibold">
@@ -235,13 +235,15 @@ export default function ResourceDetailPage() {
             {/* Engagement Actions */}
             {user && !isOwner && (
               <HStack spacing={2} width="full">
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  onClick={onOpen}
-                >
-                  Working on Similar?
-                </Button>
+                {!resource.is_anonymous && (
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    onClick={onOpen}
+                  >
+                    Working on Similar?
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   variant={hasSaved ? "solid" : "outline"}
@@ -457,8 +459,8 @@ export default function ResourceDetailPage() {
               </VStack>
             </Box>
 
-            {/* Author card - only show to logged-in users */}
-            {user && (
+            {/* Author card - only show to logged-in users if not anonymous */}
+            {user && !resource.is_anonymous && (
               <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
                 <Text fontSize="xs" fontWeight="bold" color="gray.600" mb={3}>
                   AUTHOR

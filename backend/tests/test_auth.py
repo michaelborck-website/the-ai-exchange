@@ -20,6 +20,7 @@ def test_register_new_user(client: TestClient) -> None:
             "email": "newuser@curtin.edu.au",
             "full_name": "New User",
             "password": "securepass123",
+            "disciplines": ["MARKETING", "BUSINESS"],
         },
     )
     assert response.status_code == 201
@@ -27,6 +28,7 @@ def test_register_new_user(client: TestClient) -> None:
     assert data["email"] == "newuser@curtin.edu.au"
     assert data["full_name"] == "New User"
     assert data["role"] == "ADMIN"  # First user is admin
+    assert data["disciplines"] == ["MARKETING", "BUSINESS"]  # Disciplines should be saved
     assert "access_token" in data
     assert "refresh_token" in data
     assert data["token_type"] == "bearer"
@@ -326,3 +328,138 @@ def test_get_current_user_wrong_format(client: TestClient) -> None:
     )
     assert response.status_code == 401
     assert "Invalid token format" in response.json()["detail"]
+
+
+def test_register_with_disciplines(client: TestClient) -> None:
+    """Test that disciplines field is properly returned in responses.
+
+    Args:
+        client: Test client
+    """
+    # Register with disciplines
+    response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "disciplined@curtin.edu.au",
+            "full_name": "Disciplined User",
+            "password": "pass123",
+            "disciplines": ["MARKETING", "BUSINESS"],
+        },
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data["disciplines"] == ["MARKETING", "BUSINESS"]
+
+
+def test_login_returns_disciplines(client: TestClient, session: Session) -> None:
+    """Test that login returns disciplines field.
+
+    Args:
+        client: Test client
+        session: Database session
+    """
+    # Create user with disciplines
+    user = User(
+        email="user@curtin.edu.au",
+        full_name="Test User",
+        hashed_password=hash_password("pass123"),
+        is_active=True,
+        is_approved=True,
+        disciplines=["SUPPLY_CHAIN", "HR"],
+    )
+    session.add(user)
+    session.commit()
+
+    # Login
+    response = client.post(
+        "/api/v1/auth/login",
+        json={
+            "email": "user@curtin.edu.au",
+            "password": "pass123",
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["disciplines"] == ["SUPPLY_CHAIN", "HR"]
+
+
+def test_get_me_returns_disciplines(client: TestClient, session: Session) -> None:
+    """Test that GET /me returns disciplines field.
+
+    Args:
+        client: Test client
+        session: Database session
+    """
+    # Create user with disciplines
+    user = User(
+        email="user@curtin.edu.au",
+        full_name="Test User",
+        hashed_password=hash_password("pass123"),
+        is_active=True,
+        is_approved=True,
+        disciplines=["ACCOUNTING", "LAW"],
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    # Login to get token
+    login_response = client.post(
+        "/api/v1/auth/login",
+        json={
+            "email": "user@curtin.edu.au",
+            "password": "pass123",
+        },
+    )
+    token = login_response.json()["access_token"]
+
+    # Get current user
+    response = client.get(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["disciplines"] == ["ACCOUNTING", "LAW"]
+
+
+def test_patch_me_preserves_disciplines(client: TestClient, session: Session) -> None:
+    """Test that PATCH /me preserves disciplines field.
+
+    Args:
+        client: Test client
+        session: Database session
+    """
+    # Create user with disciplines
+    user = User(
+        email="user@curtin.edu.au",
+        full_name="Test User",
+        hashed_password=hash_password("pass123"),
+        is_active=True,
+        is_approved=True,
+        disciplines=["TOURISM"],
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    # Login to get token
+    login_response = client.post(
+        "/api/v1/auth/login",
+        json={
+            "email": "user@curtin.edu.au",
+            "password": "pass123",
+        },
+    )
+    token = login_response.json()["access_token"]
+
+    # Update profile
+    response = client.patch(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"full_name": "Updated User"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["disciplines"] == ["TOURISM"]  # Disciplines preserved
+    assert data["full_name"] == "Updated User"  # Name updated

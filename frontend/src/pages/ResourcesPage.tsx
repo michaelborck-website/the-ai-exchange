@@ -129,14 +129,14 @@ export default function ResourcesPage() {
     return sortedResources.map(resource => ({
       id: resource.id,
       title: resource.title,
-      author: resource.user?.full_name || "Faculty Member",
+      author: resource.author_name || "Faculty Member",
       area: resource.discipline,
       tools: flattenTools(resource.tools_used),
       quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
       timeSaved: resource.time_saved_value,
       views: resource.analytics?.view_count || 0,
       tried: resource.analytics?.tried_count || 0,
-saves: resource.analytics?.save_count || 0,
+      saves: resource.analytics?.save_count || 0,
       created_at: resource.created_at,
     }));
   }, [sortedResources]);

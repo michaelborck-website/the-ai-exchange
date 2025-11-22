@@ -192,7 +192,7 @@ export default function ResourceDetailPage() {
                 <HStack spacing={3} width="full" justify="space-between">
                   <VStack align="flex-start" spacing={1}>
                     <Text fontSize="sm" fontWeight="semibold">
-                      Shared by {resource.user?.full_name || "Faculty Member"}
+                      Shared by {resource.author_name || "Faculty Member"}
                     </Text>
                     <Text fontSize="xs" color="gray.600">
                       {new Date(resource.created_at).toLocaleDateString()}
@@ -403,7 +403,7 @@ export default function ResourceDetailPage() {
                                 {similar.title}
                               </Text>
                               <Text fontSize="xs" color="gray.600" mt={1}>
-                                by {similar.user?.full_name || "Faculty Member"} • {similar.discipline}
+                                by {similar.author_name || "Faculty Member"} • {similar.discipline}
                               </Text>
                             </Box>
                           ))}

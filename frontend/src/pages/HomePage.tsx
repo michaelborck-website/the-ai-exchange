@@ -91,7 +91,7 @@ export default function HomePage() {
       .map(resource => ({
         id: resource.id,
         title: resource.title,
-        author: resource.user?.full_name || "Faculty Member",
+        author: resource.author_name || "Faculty Member",
         discipline: resource.discipline,
         tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
@@ -111,7 +111,7 @@ export default function HomePage() {
       .map(resource => ({
         id: resource.id,
         title: resource.title,
-        author: resource.user?.full_name || "Faculty Member",
+        author: resource.author_name || "Faculty Member",
         discipline: resource.discipline,
         tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),

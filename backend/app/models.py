@@ -486,12 +486,10 @@ class ResourceCreate(ResourceBase):
 
     # Collaborators
     collaborators: list[str] = Field(default=[])
-    # New collaboration and metadata fields
+    # Metadata fields
     discipline: str | None = None
     author_title: str | None = None
     tools_used: dict[str, list[str]] | list[str] = Field(default={})
-    collaboration_status: CollaborationStatus | None = None
-    open_to_collaborate: list[str] = Field(default=[])
     time_saved_value: float | None = None
     time_saved_frequency: str | None = None
     evidence_of_success: list[str] = Field(default=[])
@@ -509,12 +507,10 @@ class ResourceUpdate(SQLModel):
     content_meta: dict[str, Any] | None = None
     # Collaborators
     collaborators: list[str] | None = None
-    # New collaboration and metadata fields
+    # Metadata fields
     discipline: str | None = None
     author_title: str | None = None
     tools_used: dict[str, list[str]] | None = None
-    collaboration_status: CollaborationStatus | None = None
-    open_to_collaborate: list[str] | None = None
     time_saved_value: float | None = None
     time_saved_frequency: str | None = None
     evidence_of_success: list[str] | None = None

@@ -455,7 +455,7 @@ export default function ResourceDetailPage() {
                 </Text>
                 <VStack align="stretch" spacing={2}>
                   <Text fontSize="sm" fontWeight="semibold">
-                    {resource?.user?.full_name || "Faculty Member"}
+                    {resource?.author_name || "Faculty Member"}
                   </Text>
                   <Button
                     size="xs"
@@ -463,7 +463,8 @@ export default function ResourceDetailPage() {
                     colorScheme="blue"
                     width="full"
                     as="a"
-                    href={`mailto:${resource?.user?.email}`}
+                    href={`mailto:${resource?.author_email}`}
+                    isDisabled={!resource?.author_email}
                   >
                     Email
                   </Button>

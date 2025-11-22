@@ -53,6 +53,7 @@ def list_resources(
     # Metadata filters
     discipline: str | None = Query(None, description="e.g., Marketing, Management"),
     tools: str | None = Query(None, description="Comma-separated list of tools"),
+    professional_roles: str | None = Query(None, description="Comma-separated professional roles: Educator,Researcher,Professional"),
     min_time_saved: float | None = Query(None, description="Minimum hours saved"),
     sort_by: str = Query("newest", pattern="^(newest|popular|most_tried)$"),
     skip: int = Query(0, ge=0),
@@ -68,6 +69,7 @@ def list_resources(
         status_filter: Filter by status (for requests)
         discipline: Filter by discipline (e.g., Marketing, Management)
         tools: Filter by tools (comma-separated: ChatGPT,Claude)
+        professional_roles: Filter by creator professional role (comma-separated: Educator,Researcher,Professional)
         min_time_saved: Filter for quick wins (minimum hours saved)
         sort_by: Sort order (newest, popular, most_tried)
         skip: Number of resources to skip
@@ -121,6 +123,14 @@ def list_resources(
             conditions.append(func.json_extract(Resource.tools_used, f'$.{category}').isnot(None))
         if conditions:
             query = query.where(or_(*conditions))
+
+    if professional_roles:
+        # Parse comma-separated professional roles (e.g., "Educator,Researcher")
+        # Filter resources by the creator's professional role
+        from sqlalchemy import or_
+        roles = [r.strip() for r in professional_roles.split(",")]
+        # Join with User table to filter by professional_role
+        query = query.join(User, Resource.user_id == User.id).where(User.professional_role.in_(roles))
 
     if min_time_saved is not None:
         query = query.where(Resource.time_saved_value >= min_time_saved)  # type: ignore[operator]

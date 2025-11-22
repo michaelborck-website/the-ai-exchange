@@ -22,12 +22,10 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useResource, useDeleteResource, useResources } from "@/hooks/useResources";
 import { useSaveResource, useTriedResource, useIsResourceSaved, useResourceUsersTried } from "@/hooks/useEngagement";
-import { CollaborationModal } from "@/components/CollaborationModal";
 import { useMemo } from "react";
 
 export default function ResourceDetailPage() {
@@ -38,7 +36,6 @@ export default function ResourceDetailPage() {
   const { data: resource, isLoading, isError } = useResource(id || "");
   const { data: allResources = [] } = useResources({ limit: 100 });
   const deleteResourceMutation = useDeleteResource();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Engagement hooks
   const saveResourceMutation = useSaveResource();
@@ -474,26 +471,42 @@ export default function ResourceDetailPage() {
                     variant="outline"
                     colorScheme="blue"
                     width="full"
-                    onClick={onOpen}
+                    as="a"
+                    href={`mailto:${resource?.user?.email}`}
                   >
-                    Contact
+                    Email
                   </Button>
                 </VStack>
+
+                {/* Collaborators */}
+                {resource?.collaborators && resource.collaborators.length > 0 && (
+                  <Box borderTop="1px solid" borderColor="gray.200" pt={3} mt={3}>
+                    <Text fontSize="xs" fontWeight="bold" color="gray.600" mb={2}>
+                      COLLABORATORS
+                    </Text>
+                    <VStack align="stretch" spacing={1}>
+                      {resource.collaborators.map((email, idx) => (
+                        <Button
+                          key={idx}
+                          size="xs"
+                          variant="ghost"
+                          fontSize="xs"
+                          justify="flex-start"
+                          as="a"
+                          href={`mailto:${email}`}
+                        >
+                          {email}
+                        </Button>
+                      ))}
+                    </VStack>
+                  </Box>
+                )}
               </Box>
             )}
           </VStack>
         </GridItem>
       </Grid>
 
-      {/* Collaboration Modal */}
-      <CollaborationModal
-        isOpen={isOpen}
-        onClose={onClose}
-        resourceTitle={resource.title}
-        authorName={resource.user?.full_name || "Faculty Member"}
-        authorEmail={resource.user?.email || ""}
-        collaborationStatus={resource.collaboration_status || "SEEKING"}
-      />
     </Layout>
   );
 }

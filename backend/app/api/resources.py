@@ -140,27 +140,35 @@ def list_resources(
     # Include user information and analytics for each resource
     result = []
     for resource in resources:
-        user = session.get(User, resource.user_id)
+        # Get only the fields we need for author info with a targeted query
+        user_data = session.exec(
+            select(User.id, User.full_name, User.email).where(User.id == resource.user_id)
+        ).first()
 
         # Get analytics for the resource
         analytics = session.exec(
             select(ResourceAnalytics).where(ResourceAnalytics.resource_id == resource.id)
         ).first()
 
-        if user:
+        if user_data:
             # Build response data with analytics
             response_data = ResourceResponse.model_validate(resource).model_dump()
-            response_data["analytics"] = ResourceAnalyticsResponse.model_validate(analytics).model_dump() if analytics else None
+            response_data["analytics"] = (
+                ResourceAnalyticsResponse.model_validate(analytics).model_dump()
+                if analytics
+                else None
+            )
 
             # Respect anonymity: show author name only if not anonymous
-            author_name = "Faculty Member" if resource.is_anonymous else user.full_name
-            author_email = None if resource.is_anonymous else user.email
+            user_id, full_name, email = user_data
+            author_name = "Faculty Member" if resource.is_anonymous else full_name
+            author_email = None if resource.is_anonymous else email
 
             resource_with_author = ResourceWithAuthor(
                 **response_data,
                 author_name=author_name,
                 author_email=author_email,
-                author_id=user.id,
+                author_id=user_id,
             )
             result.append(resource_with_author)
 
@@ -192,8 +200,10 @@ def get_resource(
             detail="Resource not found",
         )
 
-    # Get the user information
-    user = session.get(User, resource.user_id)
+    # Get only the fields we need for author info with a targeted query
+    user_data = session.exec(
+        select(User.id, User.full_name, User.email).where(User.id == resource.user_id)
+    ).first()
 
     # Get analytics for the resource
     analytics = session.exec(
@@ -202,19 +212,24 @@ def get_resource(
 
     # Build response data
     response_data = ResourceResponse.model_validate(resource).model_dump()
-    response_data["analytics"] = ResourceAnalyticsResponse.model_validate(analytics).model_dump() if analytics else None
+    response_data["analytics"] = (
+        ResourceAnalyticsResponse.model_validate(analytics).model_dump()
+        if analytics
+        else None
+    )
 
     # Build response with user information
-    if user:
+    if user_data:
         # Respect anonymity: show author name only if not anonymous
-        author_name = "Faculty Member" if resource.is_anonymous else user.full_name
-        author_email = None if resource.is_anonymous else user.email
+        user_id, full_name, email = user_data
+        author_name = "Faculty Member" if resource.is_anonymous else full_name
+        author_email = None if resource.is_anonymous else email
 
         return ResourceWithAuthor(
             **response_data,
             author_name=author_name,
             author_email=author_email,
-            author_id=user.id,
+            author_id=user_id,
         )
 
     # Fallback if no user found (shouldn't happen)

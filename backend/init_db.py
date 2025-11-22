@@ -5,7 +5,6 @@ from uuid import uuid4
 
 from sqlmodel import Session, SQLModel, select
 
-from app.core.config import settings
 from app.core.security import hash_password
 from app.models import User, UserRole
 from app.services.database import engine
@@ -66,7 +65,7 @@ def init_db() -> None:
         session.add(admin_user)
         session.commit()
 
-        print(f"\n✓ Admin user created successfully!")
+        print("\n✓ Admin user created successfully!")
         print(f"  Email: {admin_user.email}")
         print(f"  Name: {admin_user.full_name}")
         print(f"  Role: {admin_user.role.value}")

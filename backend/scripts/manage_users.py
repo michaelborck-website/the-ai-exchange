@@ -10,16 +10,16 @@ Usage:
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from sqlmodel import Session, select
-from app.services.database import engine
-from app.models import User, UserRole
+
 from app.core.security import hash_password
+from app.models import User, UserRole
+from app.services.database import engine
 
 
 def list_users():
@@ -27,24 +27,24 @@ def list_users():
     session = Session(engine)
     try:
         users = session.exec(select(User)).all()
-        
+
         if not users:
             print("❌ No users found in database")
             return
-        
+
         print("\n📋 Users in Database:")
         print("-" * 70)
         print(f"{'Email':<35} {'Name':<25} {'Role':<10}")
         print("-" * 70)
-        
+
         for user in sorted(users, key=lambda u: u.email):
             print(f"{user.email:<35} {user.full_name:<25} {user.role.value:<10}")
-        
+
         print("-" * 70)
         admin_count = len([u for u in users if u.role == UserRole.ADMIN])
         staff_count = len([u for u in users if u.role == UserRole.STAFF])
         print(f"\nTotal: {len(users)} users ({admin_count} ADMIN, {staff_count} STAFF)")
-        
+
     finally:
         session.close()
 
@@ -54,22 +54,22 @@ def promote_to_admin(email: str):
     session = Session(engine)
     try:
         user = session.exec(select(User).where(User.email == email)).first()
-        
+
         if not user:
             print(f"❌ User not found: {email}")
             return False
-        
+
         if user.role == UserRole.ADMIN:
             print(f"⚠️  {email} is already an ADMIN")
             return False
-        
+
         user.role = UserRole.ADMIN
         session.add(user)
         session.commit()
-        
+
         print(f"✅ Promoted {email} ({user.full_name}) to ADMIN")
         return True
-        
+
     except Exception as e:
         session.rollback()
         print(f"❌ Error: {e}")
@@ -87,7 +87,7 @@ def create_admin(email: str, full_name: str, password: str):
         if existing:
             print(f"❌ User already exists: {email}")
             return False
-        
+
         # Create new admin user
         user = User(
             email=email,
@@ -97,15 +97,15 @@ def create_admin(email: str, full_name: str, password: str):
             is_active=True,
             is_approved=True,
         )
-        
+
         session.add(user)
         session.commit()
-        
+
         print(f"✅ Created ADMIN account: {email}")
         print(f"   Name: {full_name}")
         print(f"   Password: {password}")
         return True
-        
+
     except Exception as e:
         session.rollback()
         print(f"❌ Error: {e}")
@@ -118,9 +118,9 @@ def main():
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)
-    
+
     command = sys.argv[1].lower()
-    
+
     if command == "list-users":
         list_users()
     elif command == "promote-admin":

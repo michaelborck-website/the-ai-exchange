@@ -10,17 +10,18 @@ Usage:
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from sqlmodel import Session, select
-from app.services.database import engine, get_session
-from app.models import User, Resource, ResourceAnalytics
-from app.core.security import hash_password
 from datetime import datetime, timedelta
+
+from sqlmodel import Session, select
+
+from app.core.security import hash_password
+from app.models import Resource, ResourceAnalytics, User
+from app.services.database import engine
 
 # Mock data - only STAFF users for beta testing
 # ADMIN accounts should be created using init_db.py, not hardcoded in mock data

@@ -28,11 +28,13 @@ import {
   FormLabel,
   Spinner,
   Center,
+  Select,
 } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUpdateProfile } from "@/hooks/useAuth";
 import { useResources } from "@/hooks/useResources";
 import { useUserSavedResources } from "@/hooks/useEngagement";
+import { ProfessionalRole, PROFESSIONAL_ROLES } from "@/types/index";
 
 function SavedIdeasSection() {
   const navigate = useNavigate();
@@ -111,6 +113,9 @@ export default function ProfilePage() {
 
   // Profile edit state
   const [fullName, setFullName] = useState(user?.full_name || "");
+  const [professionalRole, setProfessionalRole] = useState<ProfessionalRole>(
+    user?.professional_role || "Educator"
+  );
   const [isEditing, setIsEditing] = useState(false);
 
   // Notification preferences
@@ -138,6 +143,7 @@ export default function ProfilePage() {
     try {
       await updateMutation.mutateAsync({
         full_name: fullName,
+        professional_role: professionalRole,
         notification_prefs: {
           notify_requests: notifyRequests,
           notify_solutions: notifySolutions,
@@ -184,9 +190,16 @@ export default function ProfilePage() {
                   You
                 </Badge>
               </HStack>
-              <Text color="gray.600" fontSize="sm">
-                {user?.role === "ADMIN" ? "Administrator" : "Educator & Facilitator"}
-              </Text>
+              <HStack spacing={2} mt={2}>
+                <Text color="gray.600" fontSize="sm">
+                  {user?.professional_role || "Educator"}
+                </Text>
+                {user?.professional_role && (
+                  <Badge colorScheme="teal" variant="subtle" fontSize="xs">
+                    {user.professional_role}
+                  </Badge>
+                )}
+              </HStack>
             </VStack>
           </HStack>
 
@@ -350,6 +363,23 @@ export default function ProfilePage() {
                         />
                       </FormControl>
 
+                      {/* Professional Role */}
+                      <FormControl>
+                        <FormLabel fontSize="sm" fontWeight="semibold">
+                          Professional Role
+                        </FormLabel>
+                        <Select
+                          value={professionalRole}
+                          onChange={(e) => setProfessionalRole(e.target.value as ProfessionalRole)}
+                          isDisabled={!isEditing}
+                          bg={isEditing ? "white" : "gray.50"}
+                        >
+                          <option value="Educator">Educator</option>
+                          <option value="Researcher">Researcher</option>
+                          <option value="Professional">Professional</option>
+                        </Select>
+                      </FormControl>
+
                       <Divider />
 
                       <Heading size="md">Notification Preferences</Heading>
@@ -406,6 +436,7 @@ export default function ProfilePage() {
                               onClick={() => {
                                 setIsEditing(false);
                                 setFullName(user?.full_name || "");
+                                setProfessionalRole(user?.professional_role || "Educator");
                               }}
                             >
                               Cancel

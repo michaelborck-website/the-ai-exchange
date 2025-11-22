@@ -199,13 +199,20 @@ class Resource(SQLModel, table=True):
         description="AI and related tools by category. e.g., {'LLM': ['Claude', 'ChatGPT'], 'CUSTOM_APP': ['Talk-Buddy']}",
         sa_column=Column(JSON),
     )
+    # Collaborators field - list of email addresses of people involved in this project
+    collaborators: list[str] = Field(
+        default=[],
+        description="Email addresses of collaborators involved in this idea (editable). First email is primary contact.",
+        sa_column=Column(JSON),
+    )
+    # DEPRECATED - will be removed in next version
     collaboration_status: CollaborationStatus | None = Field(
         default=None,
-        description="SEEKING, PROVEN, or HAS_MATERIALS",
+        description="[DEPRECATED] SEEKING, PROVEN, or HAS_MATERIALS",
     )
     open_to_collaborate: list[str] = Field(
         default=[],
-        description="e.g., questions, improvements, workshop, materials",
+        description="[DEPRECATED] e.g., questions, improvements, workshop, materials",
         sa_column=Column(JSON),
     )
     time_saved_value: float | None = Field(
@@ -495,6 +502,8 @@ class ResourceBase(SQLModel):
 class ResourceCreate(ResourceBase):
     """Resource creation schema."""
 
+    # Collaborators
+    collaborators: list[str] = Field(default=[])
     # New collaboration and metadata fields
     discipline: str | None = None
     author_title: str | None = None
@@ -516,6 +525,8 @@ class ResourceUpdate(SQLModel):
     title: str | None = None
     content_text: str | None = None
     content_meta: dict[str, Any] | None = None
+    # Collaborators
+    collaborators: list[str] | None = None
     # New collaboration and metadata fields
     discipline: str | None = None
     author_title: str | None = None
@@ -559,6 +570,8 @@ class ResourceResponse(ResourceBase):
     user_tags: list[str]
     shadow_tags: list[str]
     shadow_description: str | None
+    # Collaborators
+    collaborators: list[str]
     # New collaboration and metadata fields
     discipline: str | None
     author_title: str | None

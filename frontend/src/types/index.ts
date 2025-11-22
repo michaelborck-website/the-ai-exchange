@@ -46,8 +46,6 @@ export interface UserUpdateRequest {
 export type ResourceType = "REQUEST" | "USE_CASE" | "PROMPT" | "TOOL" | "POLICY" | "PAPER" | "PROJECT" | "CONFERENCE" | "DATASET";
 export type ResourceStatus = "OPEN" | "SOLVED" | "ARCHIVED";
 
-export type CollaborationStatus = "SEEKING" | "PROVEN" | "HAS_MATERIALS";
-
 export interface Resource {
   id: string;
   user_id: string;
@@ -65,13 +63,12 @@ export interface Resource {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
-  // New collaboration and metadata fields
+  // Metadata fields
   discipline?: string;
   author_title?: string;
   tools_used?: Record<string, string[]>; // Categorized tools, e.g., { "LLM": ["Claude"], "CUSTOM_APP": ["Talk-Buddy"] }
   tools_used_flat?: string[]; // Flattened list of all tools
-  collaboration_status?: CollaborationStatus;
-  open_to_collaborate?: string[];
+  collaborators?: string[]; // Email addresses of collaborators
   time_saved_value?: number;
   time_saved_frequency?: string;
   evidence_of_success?: string[];
@@ -140,7 +137,6 @@ export interface ResourceCard {
   timeSaved?: number;
   views: number;
   tried: number;
-  collaborationStatus?: CollaborationStatus;
 }
 
 export interface ResourcePreview {

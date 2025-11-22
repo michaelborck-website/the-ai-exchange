@@ -37,7 +37,7 @@ export default function CreateResourcePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [discipline, setDiscipline] = useState("");
-  const [collaborationStatus, setCollaborationStatus] = useState("");
+  const [collaborators, setCollaborators] = useState("");
   const [timeSavedValue, setTimeSavedValue] = useState("");
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [userTags, setUserTags] = useState("");
@@ -75,10 +75,19 @@ export default function CreateResourcePage() {
       const contentMeta: Record<string, unknown> = {};
 
       if (discipline) contentMeta.discipline = discipline;
-      if (collaborationStatus) contentMeta.collaboration_status = collaborationStatus;
       if (timeSavedValue) contentMeta.time_saved_value = parseInt(timeSavedValue);
       if (selectedTools.length > 0) contentMeta.tools_used = selectedTools;
       if (userTags) contentMeta.user_tags = userTags.split(",").map((t) => t.trim());
+
+      // Parse collaborators from comma/newline separated emails
+      let collaboratorsList: string[] = [];
+      if (collaborators.trim()) {
+        collaboratorsList = collaborators
+          .split(/[,\n]/)
+          .map((email) => email.trim())
+          .filter((email) => email.length > 0 && email.includes("@"));
+      }
+      if (collaboratorsList.length > 0) contentMeta.collaborators = collaboratorsList;
 
       await createMutation.mutateAsync({
         type,
@@ -169,19 +178,16 @@ export default function CreateResourcePage() {
               <FormHelperText>This helps categorize your contribution</FormHelperText>
             </FormControl>
 
-            {/* Collaboration Status */}
+            {/* Collaborators */}
             <FormControl>
-              <FormLabel fontWeight="bold">Are You Seeking Collaborators?</FormLabel>
-              <Select
-                value={collaborationStatus}
-                onChange={(e) => setCollaborationStatus(e.target.value)}
-                placeholder="Select collaboration status"
-              >
-                <option value="SEEKING">Yes, actively seeking collaborators</option>
-                <option value="PROVEN">Already tested and proven</option>
-                <option value="HAS_MATERIALS">Have materials to share</option>
-              </Select>
-              <FormHelperText>Let others know how they can engage with your work</FormHelperText>
+              <FormLabel fontWeight="bold">Collaborators (Optional)</FormLabel>
+              <Textarea
+                value={collaborators}
+                onChange={(e) => setCollaborators(e.target.value)}
+                placeholder="Add email addresses of collaborators involved in this idea (one per line, or separated by commas)"
+                minHeight="80px"
+              />
+              <FormHelperText>Enter email addresses of people collaborating on this resource. First email is the primary contact.</FormHelperText>
             </FormControl>
 
             {/* Tools Used */}

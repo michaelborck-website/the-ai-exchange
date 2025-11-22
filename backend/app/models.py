@@ -50,14 +50,6 @@ class ResourceStatus(str, Enum):
     SOLVED = "SOLVED"
 
 
-class CollaborationStatus(str, Enum):
-    """Collaboration status for ideas."""
-
-    SEEKING = "SEEKING"  # Open to collaborators
-    PROVEN = "PROVEN"  # Tested in practice
-    HAS_MATERIALS = "HAS_MATERIALS"  # Has supporting files
-
-
 class SharingLevel(str, Enum):
     """Sharing level for prompts and resources."""
 
@@ -203,16 +195,6 @@ class Resource(SQLModel, table=True):
     collaborators: list[str] = Field(
         default=[],
         description="Email addresses of collaborators involved in this idea (editable). First email is primary contact.",
-        sa_column=Column(JSON),
-    )
-    # DEPRECATED - will be removed in next version
-    collaboration_status: CollaborationStatus | None = Field(
-        default=None,
-        description="[DEPRECATED] SEEKING, PROVEN, or HAS_MATERIALS",
-    )
-    open_to_collaborate: list[str] = Field(
-        default=[],
-        description="[DEPRECATED] e.g., questions, improvements, workshop, materials",
         sa_column=Column(JSON),
     )
     time_saved_value: float | None = Field(

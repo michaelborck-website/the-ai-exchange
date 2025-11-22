@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import { useResources } from "@/hooks/useResources";
-import { Resource } from "@/types/index";
+import { Resource, ProfessionalRole, PROFESSIONAL_ROLES } from "@/types/index";
 
 interface FilterSidebarProps {
   onFiltersChange: (filters: FilterState) => void;
@@ -33,6 +33,7 @@ interface FilterSidebarProps {
 export interface FilterState {
   disciplines: string[];
   tools: string[];
+  professionalRoles: ProfessionalRole[];
   minTimeSaved: number;
   sortBy: "newest" | "popular" | "most_tried";
 }
@@ -101,6 +102,7 @@ export function FilterSidebar({
     initialFilters || {
       disciplines: [],
       tools: [],
+      professionalRoles: [],
       minTimeSaved: 0,
       sortBy: "newest",
     }
@@ -126,6 +128,16 @@ export function FilterSidebar({
     onFiltersChange(newFilters);
   };
 
+  const handleProfessionalRoleChange = (role: ProfessionalRole) => {
+    const updated = filters.professionalRoles.includes(role)
+      ? filters.professionalRoles.filter((r) => r !== role)
+      : [...filters.professionalRoles, role];
+
+    const newFilters = { ...filters, professionalRoles: updated };
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
+  };
+
   const handleTimeSavedChange = (values: number[]) => {
     const newFilters = { ...filters, minTimeSaved: values[0] };
     setFilters(newFilters);
@@ -144,6 +156,7 @@ export function FilterSidebar({
     const resetFilters: FilterState = {
       disciplines: [],
       tools: [],
+      professionalRoles: [],
       minTimeSaved: 0,
       sortBy: "newest",
     };
@@ -154,6 +167,7 @@ export function FilterSidebar({
   const activeFilterCount =
     filters.disciplines.length +
     filters.tools.length +
+    filters.professionalRoles.length +
     (filters.minTimeSaved > 0 ? 1 : 0);
 
   return (
@@ -239,6 +253,26 @@ export function FilterSidebar({
               ))}
             </VStack>
           )}
+        </VStack>
+
+        <Divider />
+
+        {/* Professional Role */}
+        <VStack align="stretch" spacing={3}>
+          <Text fontSize="sm" fontWeight="semibold" color="gray.700">
+            Creator Role
+          </Text>
+          <VStack align="stretch" spacing={2}>
+            {(Object.keys(PROFESSIONAL_ROLES) as ProfessionalRole[]).map((role) => (
+              <Checkbox
+                key={role}
+                isChecked={filters.professionalRoles.includes(role)}
+                onChange={() => handleProfessionalRoleChange(role)}
+              >
+                {role}
+              </Checkbox>
+            ))}
+          </VStack>
         </VStack>
 
         <Divider />

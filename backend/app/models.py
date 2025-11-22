@@ -550,12 +550,10 @@ class ResourceResponse(ResourceBase):
     shadow_description: str | None
     # Collaborators
     collaborators: list[str]
-    # New collaboration and metadata fields
+    # Metadata fields
     discipline: str | None
     author_title: str | None
     tools_used: dict[str, list[str]]
-    collaboration_status: CollaborationStatus | None
-    open_to_collaborate: list[str]
     time_saved_value: float | None
     time_saved_frequency: str | None
     evidence_of_success: list[str]

@@ -16,7 +16,6 @@ from app.api import (
     admin,
     analytics,
     auth,
-    collaboration,
     collections,
     comments,
     prompts,
@@ -111,7 +110,6 @@ app.include_router(resources.router)
 app.include_router(comments.router)
 app.include_router(prompts.router)
 app.include_router(collections.router)
-app.include_router(collaboration.router)
 app.include_router(analytics.router)
 app.include_router(admin.router)
 app.include_router(subscriptions.router)

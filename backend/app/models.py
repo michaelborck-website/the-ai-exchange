@@ -25,6 +25,8 @@ class Discipline(str, Enum):
     INNOVATION_ENTREPRENEURSHIP = "Innovation, Entrepreneurship, Strategy and International Business"
     PEOPLE_CULTURE = "People, Culture and Organisations"
     TOURISM_HOSPITALITY = "Tourism, Hospitality and Events"
+    PROPERTY_DEVELOPMENT = "Property Development"
+    SUPPLY_CHAIN = "Supply Chain and Logistics"
 
     # Research Institutes
     FUTURE_OF_WORK = "Future of Work Institute"
@@ -34,14 +36,17 @@ class Discipline(str, Enum):
     ACSES = "Australian Centre for Student Equity and Success"
 
     # Professional Services
+    MANAGEMENT = "Management"
+    EXECUTIVE_SUPPORT = "Executive Support"
+    LEARNING_TEACHING = "Learning and Teaching Planning"
+    OPERATIONS = "Operations"
+    ADMINISTRATION = "Administration"
     HUMAN_RESOURCES = "Human Resources"
     INFORMATION_TECHNOLOGY = "Information Technology"
     FINANCE_ADMINISTRATION = "Finance and Administration"
     LIBRARY_LEARNING = "Library and Learning Services"
     STUDENT_SERVICES = "Student Services"
     FACILITIES_OPERATIONS = "Facilities and Operations"
-    PROPERTY_DEVELOPMENT = "Property Development"
-    SUPPLY_CHAIN = "Supply Chain and Logistics"
 
 
 class ResourceType(str, Enum):

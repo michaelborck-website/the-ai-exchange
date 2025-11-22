@@ -1,6 +1,6 @@
 /**
  * Areas of Focus at Curtin University
- * Includes academic schools/departments and research institutes
+ * Includes academic schools/departments, research institutes, and professional services
  */
 
 export const AREAS = [
@@ -10,6 +10,8 @@ export const AREAS = [
   "People, Culture and Organisations",
   "Marketing",
   "Tourism, Hospitality and Events",
+  "Property Development",
+  "Supply Chain and Logistics",
 
   // Research Institutes
   "Future of Work Institute",
@@ -18,15 +20,18 @@ export const AREAS = [
   "Tourism Research Cluster",
   "Australian Centre for Student Equity and Success",
 
-  // Professional Services (examples - can be expanded)
+  // Professional Services
+  "Management",
+  "Executive Support",
+  "Learning and Teaching Planning",
+  "Operations",
+  "Administration",
   "Human Resources",
   "Information Technology",
   "Finance and Administration",
   "Library and Learning Services",
   "Student Services",
   "Facilities and Operations",
-  "Property Development",
-  "Supply Chain and Logistics",
 ];
 
 /**

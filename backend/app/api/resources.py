@@ -142,13 +142,23 @@ def list_resources(
 
     resources = session.exec(query.offset(skip).limit(limit)).all()
 
-    # Include user information for each resource
+    # Include user information and analytics for each resource
     result = []
     for resource in resources:
         user = session.get(User, resource.user_id)
+
+        # Get analytics for the resource
+        analytics = session.exec(
+            select(ResourceAnalytics).where(ResourceAnalytics.resource_id == resource.id)
+        ).first()
+
         if user:
+            # Build response data with analytics
+            response_data = ResourceResponse.model_validate(resource).model_dump()
+            response_data["analytics"] = ResourceAnalyticsResponse.model_validate(analytics).model_dump() if analytics else None
+
             resource_with_author = ResourceWithAuthor(
-                **ResourceResponse.model_validate(resource).model_dump(),
+                **response_data,
                 author_name=user.full_name,
                 author_email=user.email,
                 author_id=user.id,

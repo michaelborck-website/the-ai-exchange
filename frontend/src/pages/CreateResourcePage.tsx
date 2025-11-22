@@ -25,15 +25,14 @@ import { useCreateResource } from "@/hooks/useResources";
 import { ResourceType } from "@/types/index";
 
 // Disciplines match the backend Discipline enum in models.py
+// These are the Curtin University research areas
 const DISCIPLINES = [
-  { value: "ALL", label: "All Disciplines" },
-  { value: "MARKETING", label: "Marketing" },
-  { value: "BUSINESS", label: "Business" },
-  { value: "SUPPLY_CHAIN", label: "Supply Chain" },
-  { value: "HR", label: "HR" },
-  { value: "TOURISM", label: "Tourism" },
-  { value: "ACCOUNTING", label: "Accounting" },
-  { value: "LAW", label: "Law" },
+  { value: "Marketing", label: "Marketing" },
+  { value: "Business Information Systems", label: "Business Information Systems" },
+  { value: "Future of Work Institute", label: "Future of Work Institute" },
+  { value: "People, Culture and Organisations", label: "People, Culture and Organisations" },
+  { value: "Human Resources", label: "Human Resources" },
+  { value: "Information Technology", label: "Information Technology" },
 ];
 const TOOL_CATEGORIES = ["LLM", "CUSTOM_APP", "VISION", "SPEECH", "WORKFLOW", "DEVELOPMENT", "OTHER"];
 

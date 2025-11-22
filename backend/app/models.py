@@ -17,16 +17,14 @@ class UserRole(str, Enum):
 
 
 class Discipline(str, Enum):
-    """Business disciplines/schools for users."""
+    """Research areas/schools at Curtin University."""
 
-    ALL = "ALL"  # User works across all disciplines
-    MARKETING = "MARKETING"
-    BUSINESS = "BUSINESS"
-    SUPPLY_CHAIN = "SUPPLY_CHAIN"
-    HR = "HR"
-    TOURISM = "TOURISM"
-    ACCOUNTING = "ACCOUNTING"
-    LAW = "LAW"
+    MARKETING = "Marketing"
+    BUSINESS_INFORMATION_SYSTEMS = "Business Information Systems"
+    FUTURE_OF_WORK = "Future of Work Institute"
+    PEOPLE_CULTURE = "People, Culture and Organisations"
+    HUMAN_RESOURCES = "Human Resources"
+    INFORMATION_TECHNOLOGY = "Information Technology"
 
 
 class ResourceType(str, Enum):

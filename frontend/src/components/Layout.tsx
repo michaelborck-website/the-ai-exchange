@@ -48,6 +48,7 @@ export function Layout({ children }: LayoutProps) {
     ? [
         { label: "Home", href: "/" },
         { label: "Browse", href: "/resources" },
+        { label: "Export", href: "/resources/export" },
         { label: "Share Idea", href: "/resources/new" },
         { label: "Getting Started", href: "/getting-started" },
         { label: "About", href: "/about" },
@@ -56,6 +57,7 @@ export function Layout({ children }: LayoutProps) {
     : [
         { label: "Home", href: "/" },
         { label: "Browse", href: "/resources" },
+        { label: "Export", href: "/resources/export" },
         { label: "Getting Started", href: "/getting-started" },
         { label: "About", href: "/about" },
       ];

@@ -6,6 +6,7 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { useAuth } from "@/hooks/useAuth";
+import { AreaSelect } from "@/components/AreaSelect";
 import {
   VStack,
   Heading,
@@ -23,17 +24,6 @@ import {
 } from "@chakra-ui/react";
 import { useCreateResource } from "@/hooks/useResources";
 import { ResourceType } from "@/types/index";
-
-// Disciplines match the backend Discipline enum in models.py
-// These are the Curtin University research areas
-const DISCIPLINES = [
-  { value: "Marketing", label: "Marketing" },
-  { value: "Business Information Systems", label: "Business Information Systems" },
-  { value: "Future of Work Institute", label: "Future of Work Institute" },
-  { value: "People, Culture and Organisations", label: "People, Culture and Organisations" },
-  { value: "Human Resources", label: "Human Resources" },
-  { value: "Information Technology", label: "Information Technology" },
-];
 const TOOL_CATEGORIES = ["LLM", "CUSTOM_APP", "VISION", "SPEECH", "WORKFLOW", "DEVELOPMENT", "OTHER"];
 
 export default function CreateResourcePage() {
@@ -171,21 +161,12 @@ export default function CreateResourcePage() {
             </FormControl>
 
             {/* Area / Discipline */}
-            <FormControl>
-              <FormLabel fontWeight="bold">Your Area</FormLabel>
-              <Select
-                value={defaultDiscipline}
-                onChange={(e) => setDiscipline(e.target.value)}
-                placeholder="Select your primary area"
-              >
-                {DISCIPLINES.map((d) => (
-                  <option key={d.value} value={d.value}>
-                    {d.label}
-                  </option>
-                ))}
-              </Select>
-              <FormHelperText>This helps categorize your contribution</FormHelperText>
-            </FormControl>
+            <AreaSelect
+              value={defaultDiscipline}
+              onChange={setDiscipline}
+              label="Your Area"
+              placeholder="Search or type your research area..."
+            />
 
             {/* Collaborators */}
             <FormControl>

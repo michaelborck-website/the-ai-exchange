@@ -19,12 +19,29 @@ class UserRole(str, Enum):
 class Discipline(str, Enum):
     """Research areas/schools at Curtin University."""
 
+    # Academic Schools/Departments
     MARKETING = "Marketing"
     BUSINESS_INFORMATION_SYSTEMS = "Business Information Systems"
-    FUTURE_OF_WORK = "Future of Work Institute"
+    INNOVATION_ENTREPRENEURSHIP = "Innovation, Entrepreneurship, Strategy and International Business"
     PEOPLE_CULTURE = "People, Culture and Organisations"
+    TOURISM_HOSPITALITY = "Tourism, Hospitality and Events"
+
+    # Research Institutes
+    FUTURE_OF_WORK = "Future of Work Institute"
+    JOHN_CURTIN_INSTITUTE = "John Curtin Institute of Public Policy"
+    LUXURY_BRANDING = "Luxury Branding Research Centre"
+    TOURISM_RESEARCH = "Tourism Research Cluster"
+    ACSES = "Australian Centre for Student Equity and Success"
+
+    # Professional Services
     HUMAN_RESOURCES = "Human Resources"
     INFORMATION_TECHNOLOGY = "Information Technology"
+    FINANCE_ADMINISTRATION = "Finance and Administration"
+    LIBRARY_LEARNING = "Library and Learning Services"
+    STUDENT_SERVICES = "Student Services"
+    FACILITIES_OPERATIONS = "Facilities and Operations"
+    PROPERTY_DEVELOPMENT = "Property Development"
+    SUPPLY_CHAIN = "Supply Chain and Logistics"
 
 
 class ResourceType(str, Enum):

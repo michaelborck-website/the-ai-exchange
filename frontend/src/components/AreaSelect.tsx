@@ -113,93 +113,103 @@ export const AreaSelect: React.FC<AreaSelectProps> = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
-    <FormControl isRequired={isRequired}>
-      <FormLabel fontWeight="semibold">{label}</FormLabel>
-      <VStack align="stretch" spacing={0} ref={containerRef} position="relative">
-        {/* Input Field */}
-        <Input
-          ref={inputRef}
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsOpen(true)}
-          placeholder={placeholder}
+    <FormControl isRequired={isRequired} ref={containerRef} position="relative">
+      <FormLabel fontWeight="bold">{label}</FormLabel>
+      <Input
+        ref={inputRef}
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setIsOpen(true)}
+        placeholder={placeholder}
+        autoComplete="off"
+      />
+
+      {/* Dropdown Menu */}
+      {isOpen && (filteredAreas.length > 0 || isCustomEntry) && (
+        <Box
+          position="absolute"
+          top="100%"
+          left={0}
+          right={0}
           bg="white"
-          autoComplete="off"
-          borderBottomRadius={isOpen && filteredAreas.length > 0 ? 0 : "md"}
-        />
+          border="1px"
+          borderColor="gray.200"
+          borderRadius="md"
+          boxShadow="md"
+          zIndex={10}
+          maxH="250px"
+          overflowY="auto"
+          mt={1}
+        >
+          {/* Show filtered predefined areas */}
+          {filteredAreas.length > 0 && (
+            <>
+              {filteredAreas.map((area, index) => (
+                <Box
+                  key={area}
+                  p={3}
+                  cursor="pointer"
+                  bg={highlightedIndex === index ? "blue.100" : "transparent"}
+                  _hover={{ bg: "gray.100" }}
+                  onClick={() => handleSelectArea(area)}
+                >
+                  <Text fontSize="sm">{area}</Text>
+                </Box>
+              ))}
+            </>
+          )}
 
-        {/* Dropdown List */}
-        {isOpen && filteredAreas.length > 0 && (
-          <Box
-            position="absolute"
-            top="100%"
-            left={0}
-            right={0}
-            bg="white"
-            border="1px"
-            borderColor="gray.200"
-            borderTop="none"
-            borderBottomRadius="md"
-            boxShadow="md"
-            zIndex={10}
-            maxH="300px"
-            overflowY="auto"
-          >
-            {filteredAreas.map((area, index) => (
-              <Box
-                key={area}
-                px={4}
-                py={2}
-                cursor="pointer"
-                bg={index === highlightedIndex ? "blue.50" : "white"}
-                _hover={{ bg: "blue.50" }}
-                onClick={() => handleSelectArea(area)}
-                fontSize="sm"
-              >
-                {area}
-              </Box>
-            ))}
-          </Box>
-        )}
+          {/* Show custom entry option if input doesn't match any area */}
+          {isCustomEntry && filteredAreas.length > 0 && (
+            <Box borderTop="1px" borderColor="gray.200" />
+          )}
 
-        {/* No Results Message */}
-        {isOpen && filteredAreas.length === 0 && inputValue.trim() && (
-          <Box
-            position="absolute"
-            top="100%"
-            left={0}
-            right={0}
-            bg="white"
-            border="1px"
-            borderColor="gray.200"
-            borderTop="none"
-            borderBottomRadius="md"
-            boxShadow="md"
-            px={4}
-            py={3}
-            zIndex={10}
-          >
-            <Text fontSize="sm" color="gray.600">
-              <strong>"{inputValue}"</strong> will be added as a custom area
-            </Text>
-            <Text fontSize="xs" color="gray.500" mt={1}>
-              Press Enter to confirm
-            </Text>
-          </Box>
-        )}
+          {isCustomEntry && (
+            <Box
+              p={3}
+              cursor="pointer"
+              bg={
+                highlightedIndex === filteredAreas.length ? "blue.100" : "white"
+              }
+              _hover={{ bg: "gray.100" }}
+              onClick={() => handleSelectArea(inputValue)}
+            >
+              <Text fontSize="sm" color="blue.600" fontWeight="semibold">
+                Use "{inputValue}" as custom area
+              </Text>
+            </Box>
+          )}
+        </Box>
+      )}
 
-        {/* Custom Entry Indicator */}
-        {isCustomEntry && !isOpen && (
-          <Text fontSize="xs" color="blue.600" mt={2}>
-            ℹ️ Custom area: "{inputValue}"
+      {/* Show message when no matches found and no custom entry */}
+      {isOpen && filteredAreas.length === 0 && !isCustomEntry && (
+        <Box
+          position="absolute"
+          top="100%"
+          left={0}
+          right={0}
+          bg="white"
+          border="1px"
+          borderColor="gray.200"
+          borderRadius="md"
+          boxShadow="md"
+          zIndex={10}
+          p={3}
+          mt={1}
+        >
+          <Text fontSize="sm" color="gray.500">
+            No areas found. Start typing to create a custom area.
           </Text>
-        )}
-      </VStack>
+        </Box>
+      )}
     </FormControl>
   );
 };

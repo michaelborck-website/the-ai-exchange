@@ -184,11 +184,20 @@ The production frontend build is optimized and ready for deployment.
 
 ## 🔐 Configuration (.env)
 
-Create a `.env` file in the `backend/` directory. See `.env.example` for all available options:
+Create a `.env` file in the `backend/` directory. Start with the minimal template:
 
 ```bash
+# Quick start - minimal setup
+cp backend/.env.minimal backend/.env
+
+# Or use the full template with all options
 cp backend/.env.example backend/.env
 ```
+
+**Quick reference:**
+- **New to this project?** Start with `backend/.env.minimal` - it shows only what you need to configure
+- **All options?** Use `backend/.env.example` - it has every available setting with documentation
+- **Sensible defaults?** Yes! Most settings have safe defaults - only `SECRET_KEY` is truly critical
 
 Key configuration variables:
 

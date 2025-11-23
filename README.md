@@ -400,10 +400,9 @@ Once the backend is running, access the interactive API documentation:
 ## 📚 Development Documentation
 
 - **[CLAUDE.md](CLAUDE.md)** - Development guidelines, tooling setup, code standards
-- **[docs/PHASE3_FRONTEND_PLAN.md](docs/PHASE3_FRONTEND_PLAN.md)** - Phase 3 frontend implementation roadmap
-- **[docs/PHASE2_COMPLETE.md](docs/PHASE2_COMPLETE.md)** - Backend Phase 2 completion summary
-- **[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)** - Original 10-phase implementation roadmap
+- **[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)** - 10-phase implementation roadmap
 - **[docs/srs.md](docs/srs.md)** - Complete software requirements specification
+- **[docs/ui-ux-ideas.md](docs/ui-ux-ideas.md)** - Design system and UX concepts
 
 ## 🚢 Deployment (VPS)
 

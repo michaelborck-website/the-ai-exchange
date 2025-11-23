@@ -27,6 +27,7 @@ import { useResources } from "@/hooks/useResources";
 import { ResourceCard } from "@/components/ResourceCard";
 import { FilterSidebar, FilterState } from "@/components/FilterSidebar";
 import { flattenTools } from "@/lib/tools";
+import { ProfessionalRole } from "@/types/index";
 
 interface ResourceCardData {
   id: string;
@@ -53,6 +54,7 @@ export default function ResourcesPage() {
       ? [searchParams.get("discipline")!]
       : [],
     tools: [],
+    professionalRoles: [],
     minTimeSaved: 0,
     sortBy: "newest",
   });
@@ -102,6 +104,12 @@ export default function ResourcesPage() {
         if (!hasMatchingTool) return false;
       }
 
+      // Professional role filter
+      if (filters.professionalRoles && filters.professionalRoles.length > 0) {
+        if (!resource.user?.professional_role || !filters.professionalRoles.includes(resource.user.professional_role)) {
+          return false;
+        }
+      }
 
       // Time saved filter
       if (filters.minTimeSaved > 0 && (resource.time_saved_value ?? 0) < filters.minTimeSaved) {

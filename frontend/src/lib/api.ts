@@ -56,10 +56,10 @@ class ApiClient {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Clear tokens and redirect to login
+          // Clear tokens on 401
           localStorage.removeItem("access_token");
           localStorage.removeItem("refresh_token");
-          window.location.href = "/login";
+          // Don't redirect here - let the app handle it through auth state
         }
         return Promise.reject(error);
       }

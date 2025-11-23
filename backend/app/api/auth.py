@@ -1,6 +1,6 @@
 """Authentication routes for user login and registration."""
 
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
@@ -23,12 +23,15 @@ from app.core.security import (
     verify_password,
 )
 from app.models import (
+    EmailVerificationRequest,
+    EmailVerificationResponse,
     ForgotPasswordRequest,
     ForgotPasswordResponse,
     ResetPasswordRequest,
     ResetPasswordResponse,
     User,
     UserCreate,
+    UserRegistrationResponse,
     UserResponse,
     UserRole,
 )
@@ -132,28 +135,33 @@ def get_current_user(
     return user
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserRegistrationResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit(LIMIT_REGISTER)
 def register(
     request: Request,  # noqa: ARG001 - required by slowapi for rate limiting
     user_create: UserCreate,
     session: Session = Depends(get_session),
-) -> TokenResponse:
-    """Register a new user.
+) -> UserRegistrationResponse:
+    """Register a new user and send verification email.
 
     Args:
         user_create: User creation data
         session: Database session
 
     Returns:
-        Token response with user info
+        Registration response with email
 
     Raises:
         HTTPException: If email already exists or domain not allowed
     """
+    from app.models import EmailVerification
+    from app.services.email_service import send_verification_email
+    import secrets
+    import string
+
     # Check if user already exists
     existing_user = session.exec(
-        select(User).where(User.email == user_create.email)
+        select(User).where(User.email == user_create.email.lower())
     ).first()
 
     if existing_user:
@@ -162,8 +170,8 @@ def register(
             detail="Email already registered",
         )
 
-    # Check domain whitelist
-    email_domain = user_create.email.split("@")[1]
+    # Check domain whitelist (lowercase email for comparison)
+    email_domain = user_create.email.lower().split("@")[1]
     is_curtin = email_domain in settings.allowed_domains
 
     if not is_curtin:
@@ -176,13 +184,14 @@ def register(
     user_count = session.exec(select(User)).all()
     is_first_user = len(user_count) == 0
 
-    # Create new user
+    # Create new user (store email as lowercase for consistency)
     new_user = User(
-        email=user_create.email,
+        email=user_create.email.lower(),
         full_name=user_create.full_name,
         hashed_password=hash_password(user_create.password),
         role=UserRole.ADMIN if is_first_user else UserRole.STAFF,
         is_active=True,
+        is_verified=is_first_user,  # First user auto-verified
         is_approved=is_curtin,  # Auto-approve if curtin domain
         disciplines=user_create.disciplines or [],
     )
@@ -191,23 +200,121 @@ def register(
     session.commit()
     session.refresh(new_user)
 
+    # Generate 6-digit verification code
+    if not is_first_user:
+        digits = string.digits
+        verification_code = "".join(secrets.choice(digits) for _ in range(6))
+
+        # Create EmailVerification record
+        verification = EmailVerification(
+            user_id=new_user.id,
+            code=verification_code,
+            expires_at=datetime.now(UTC) + timedelta(minutes=60),
+        )
+        session.add(verification)
+        session.commit()
+
+        # Send verification email
+        try:
+            send_verification_email(new_user, verification_code)
+        except Exception as e:
+            # Log error but continue - email may fail in dev environment
+            print(f"Warning: Failed to send verification email: {e}")
+
+    return UserRegistrationResponse(
+        email=new_user.email,
+        message="Registration successful. Please check your email for verification code." if not is_first_user else "First user registered. You are verified and can now log in.",
+    )
+
+
+@router.post("/verify-email", response_model=TokenResponse, status_code=status.HTTP_200_OK)
+@limiter.limit("5/minute")
+def verify_email(
+    request: Request,  # noqa: ARG001 - required by slowapi for rate limiting
+    verify_request: EmailVerificationRequest,
+    session: Session = Depends(get_session),
+) -> TokenResponse:
+    """Verify email with 6-digit code and return JWT tokens.
+
+    Args:
+        verify_request: Email verification request with code
+        session: Database session
+
+    Returns:
+        Token response with user info
+
+    Raises:
+        HTTPException: If email not found, code invalid/expired, or already used
+    """
+    from app.models import EmailVerification
+
+    # Find user by email (lowercase for consistency)
+    user = session.exec(
+        select(User).where(User.email == verify_request.email.lower())
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not found with this email",
+        )
+
+    # Find valid verification code
+    verification = session.exec(
+        select(EmailVerification).where(
+            (EmailVerification.user_id == user.id)
+            & (EmailVerification.code == verify_request.code)
+        )
+    ).first()
+
+    if not verification:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid verification code",
+        )
+
+    if verification.used:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Verification code has already been used",
+        )
+
+    if verification.is_expired:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Verification code has expired",
+        )
+
+    # Mark user as verified
+    user.is_verified = True
+    session.add(user)
+
+    # Mark verification code as used
+    verification.used = True
+    session.add(verification)
+
+    session.commit()
+    session.refresh(user)
+
     # Create tokens
     access_token = create_access_token(
-        data={"sub": str(new_user.id)},
+        data={"sub": str(user.id)},
         expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
     )
-    refresh_token = create_refresh_token(data={"sub": str(new_user.id)})
+    refresh_token = create_refresh_token(data={"sub": str(user.id)})
 
     return TokenResponse(
-        id=new_user.id,
-        email=new_user.email,
-        full_name=new_user.full_name,
-        role=new_user.role,
-        is_active=new_user.is_active,
-        is_approved=new_user.is_approved,
-        disciplines=new_user.disciplines,
-        notification_prefs=new_user.notification_prefs,
-        created_at=new_user.created_at,
+        id=user.id,
+        email=user.email,
+        full_name=user.full_name,
+        role=user.role,
+        professional_role=user.professional_role,
+        is_active=user.is_active,
+        is_verified=user.is_verified,
+        is_approved=user.is_approved,
+        disciplines=user.disciplines,
+        notification_prefs=user.notification_prefs,
+        created_at=user.created_at,
         access_token=access_token,
         refresh_token=refresh_token,
     )
@@ -230,10 +337,10 @@ def login(
         Token response with user info
 
     Raises:
-        HTTPException: If credentials invalid or user not approved
+        HTTPException: If credentials invalid or user not verified/approved
     """
-    # Find user by email
-    user = session.exec(select(User).where(User.email == login_data.email)).first()
+    # Find user by email (lowercase for consistency)
+    user = session.exec(select(User).where(User.email == login_data.email.lower())).first()
 
     if not user or not verify_password(login_data.password, user.hashed_password):
         raise HTTPException(
@@ -245,6 +352,12 @@ def login(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account is deactivated",
+        )
+
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is not verified. Please check your email for verification code.",
         )
 
     if not user.is_approved:
@@ -265,6 +378,7 @@ def login(
         email=user.email,
         full_name=user.full_name,
         role=user.role,
+        professional_role=user.professional_role,
         is_active=user.is_active,
         is_approved=user.is_approved,
         disciplines=user.disciplines,
@@ -292,7 +406,9 @@ def get_me(
         email=current_user.email,
         full_name=current_user.full_name,
         role=current_user.role,
+        professional_role=current_user.professional_role,
         is_active=current_user.is_active,
+        is_verified=current_user.is_verified,
         is_approved=current_user.is_approved,
         disciplines=current_user.disciplines,
         notification_prefs=current_user.notification_prefs,
@@ -338,6 +454,7 @@ def update_me(
         email=current_user.email,
         full_name=current_user.full_name,
         role=current_user.role,
+        professional_role=current_user.professional_role,
         is_active=current_user.is_active,
         is_approved=current_user.is_approved,
         disciplines=current_user.disciplines,

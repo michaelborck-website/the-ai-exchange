@@ -103,6 +103,7 @@ export interface Resource {
     id: string;
     full_name: string;
     email: string;
+    professional_role?: ProfessionalRole;
   };
 }
 

@@ -26,8 +26,10 @@ This is a **complete full-stack web application** built with modern technologies
 * **Domain Locking:** Authentication is restricted strictly to `@curtin.edu.au` email addresses
 * **Subscription System:** Users can subscribe to tags and receive notifications when matching resources are posted
 * **Request-Solution Workflow:** Link solutions to requests and track resolution status
-* **Email Notifications:** Automatic notifications for subscribed tags and posted solutions (mocked for MVP, ready for production SMTP)
-* **Password Reset:** Secure 6-digit code-based password reset with email delivery (mocked for MVP)
+* **Email Verification:** Two-step registration with 6-digit verification codes (first user auto-verified as admin)
+* **Flexible Email Providers:** Support for multiple email providers (dev/console, Gmail, SendGrid, custom SMTP, Curtin SMTP)
+* **Email Notifications:** Automatic notifications for subscribed tags and posted solutions
+* **Password Reset:** Secure 6-digit code-based password reset with email delivery
 * **Rate Limiting:** IP-based request throttling on auth endpoints to prevent brute force attacks and abuse
 * **Role-Based Access:** Admin and Staff roles with different capabilities
 * **Notification Preferences:** Users can customize when they receive notifications

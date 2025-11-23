@@ -57,7 +57,7 @@ def list_resources(
     min_time_saved: float | None = Query(None, description="Minimum hours saved"),
     sort_by: str = Query("newest", pattern="^(newest|popular|most_tried)$"),
     skip: int = Query(0, ge=0),
-    limit: int = Query(10, ge=1, le=100),
+    limit: int = Query(10, ge=1, le=1000),
     session: Session = Depends(get_session),
 ) -> list[ResourceWithAuthor]:
     """Get list of resources with advanced filtering and author information.

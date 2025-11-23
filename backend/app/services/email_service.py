@@ -1,4 +1,4 @@
-"""Email notification service (mocked for MVP)."""
+"""Email notification service with flexible provider support."""
 
 import logging
 from datetime import datetime
@@ -6,10 +6,11 @@ from typing import Any
 
 from app.core.config import settings
 from app.models import Resource, User
+from app.services.email_provider import get_email_provider
 
 logger = logging.getLogger(__name__)
 
-# In-memory store for mocked emails (for MVP)
+# In-memory store for mocked emails (for testing)
 _email_log: list[dict[str, Any]] = []
 
 
@@ -39,46 +40,52 @@ class EmailNotification:
 
 
 def send_email(notification: EmailNotification) -> bool:
-    """Send email notification (mocked for MVP).
-
-    For MVP, this logs to console and stores in memory.
-    In production, would integrate with SMTP server.
+    """Send email notification using configured provider.
 
     Args:
         notification: Email notification to send
 
     Returns:
-        True if successful
+        True if successful, False otherwise
     """
     try:
-        # Log to file/console
-        log_message = (
-            f"\n{'='*60}\n"
-            f"EMAIL NOTIFICATION [{notification.timestamp.isoformat()}]\n"
-            f"{'='*60}\n"
-            f"To: {notification.recipient_email}\n"
-            f"Subject: {notification.subject}\n"
-            f"Type: {notification.notification_type}\n"
-            f"{'='*60}\n"
-            f"{notification.body}\n"
-            f"{'='*60}\n"
-        )
-        logger.info(log_message)
+        # Get the configured email provider
+        provider = get_email_provider()
 
-        # Store in memory for testing
-        _email_log.append(
-            {
-                "to": notification.recipient_email,
-                "subject": notification.subject,
-                "body": notification.body,
-                "type": notification.notification_type,
-                "timestamp": notification.timestamp,
-            }
+        # Send via provider
+        success = provider.send_email(
+            to_email=notification.recipient_email,
+            subject=notification.subject,
+            body=notification.body,
+            from_email=settings.mail_from,
+            from_name=settings.mail_from_name,
         )
 
-        return True
+        if success:
+            # Store in memory log for testing
+            _email_log.append(
+                {
+                    "to": notification.recipient_email,
+                    "subject": notification.subject,
+                    "body": notification.body,
+                    "type": notification.notification_type,
+                    "timestamp": notification.timestamp,
+                }
+            )
+
+            logger.info(
+                f"Email sent ({settings.email_provider}): "
+                f"{notification.notification_type} to {notification.recipient_email}"
+            )
+        else:
+            logger.error(
+                f"Failed to send email via {settings.email_provider}: "
+                f"{notification.notification_type} to {notification.recipient_email}"
+            )
+
+        return success
     except Exception as e:
-        logger.error(f"Failed to send email: {e}")
+        logger.error(f"Error sending email: {e}")
         return False
 
 
@@ -199,6 +206,45 @@ def clear_email_log() -> None:
     """
     global _email_log
     _email_log = []
+
+
+def send_verification_email(user: User, verification_code: str) -> bool:
+    """Send email verification code to user.
+
+    Args:
+        user: User who registered
+        verification_code: 6-digit verification code
+
+    Returns:
+        True if email sent successfully
+    """
+    subject = "Verify Your Email - The AI Exchange"
+    body = f"""Hi {user.full_name},
+
+Welcome to The AI Exchange! Please verify your email address to complete your registration.
+
+Your verification code is: {verification_code}
+
+This code will expire in 60 minutes.
+
+Enter this code on the verification page to activate your account.
+
+If you did not create this account, please ignore this email.
+
+Do not share this code with anyone.
+
+Best regards,
+The AI Exchange Team
+"""
+
+    notification = EmailNotification(
+        recipient_email=user.email,
+        subject=subject,
+        body=body,
+        notification_type="email_verification",
+    )
+
+    return send_email(notification)
 
 
 def send_password_reset_email(user: User, reset_code: str) -> bool:

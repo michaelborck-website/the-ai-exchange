@@ -26,12 +26,27 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
-    # Email (mocked for MVP)
+    # Email Configuration - Flexible Provider Support
+    email_provider: str = "dev"  # Options: dev, gmail, sendgrid, custom, curtin
+
+    # Common SMTP Settings (for custom and curtin providers)
     smtp_server: str = "smtp.curtin.edu.au"
     smtp_port: int = 587
     smtp_user: str = "noreply@curtin.edu.au"
     smtp_password: str = ""
     mail_from: str = "noreply@curtin.edu.au"
+    mail_from_name: str = "The AI Exchange"
+
+    # Gmail Configuration
+    gmail_app_password: str | None = None
+
+    # SendGrid Configuration
+    sendgrid_api_key: str | None = None
+
+    # Email Settings
+    use_tls: bool = True
+    use_ssl: bool = False
+    validate_certs: bool = True
 
     # CORS
     allowed_origins: list[str] = [

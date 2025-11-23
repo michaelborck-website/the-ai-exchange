@@ -112,6 +112,7 @@ class User(SQLModel, table=True):
         description="Professional role: Educator, Researcher, or Professional",
     )
     is_active: bool = Field(default=True)
+    is_verified: bool = Field(default=False)
     is_approved: bool = Field(default=True)
     disciplines: list[str] = Field(
         default=[],
@@ -163,6 +164,37 @@ class PasswordReset(SQLModel, table=True):
     @property
     def is_valid(self) -> bool:
         """Check if reset token is valid (not used and not expired)."""
+        return not self.used and not self.is_expired
+
+
+class EmailVerification(SQLModel, table=True):
+    """Email verification model for registration email confirmation."""
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    user_id: UUID = Field(foreign_key="user.id", index=True)
+    code: str = Field(max_length=6, index=True)  # 6-digit verification code
+    expires_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True)),
+        description="Code expiration time",
+    )
+    used: bool = Field(default=False)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True)),
+    )
+
+    def __repr__(self) -> str:
+        """String representation."""
+        return f"EmailVerification(id={self.id}, user_id={self.user_id}, used={self.used})"
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if verification code has expired."""
+        return datetime.now(UTC) > self.expires_at
+
+    @property
+    def is_valid(self) -> bool:
+        """Check if verification code is valid (not used and not expired)."""
         return not self.used and not self.is_expired
 
 
@@ -483,7 +515,9 @@ class UserResponse(UserBase):
 
     id: UUID
     role: UserRole
+    professional_role: ProfessionalRole
     is_active: bool
+    is_verified: bool
     is_approved: bool
     disciplines: list[str]
     notification_prefs: dict[str, Any]
@@ -918,4 +952,25 @@ class ResetPasswordRequest(SQLModel):
 class ResetPasswordResponse(SQLModel):
     """Response schema for password reset."""
 
+    message: str
+
+
+# Email verification schemas
+class EmailVerificationRequest(SQLModel):
+    """Request schema for email verification endpoint."""
+
+    email: str
+    code: str
+
+
+class EmailVerificationResponse(SQLModel):
+    """Response schema for email verification endpoint."""
+
+    message: str
+
+
+class UserRegistrationResponse(SQLModel):
+    """Response schema for registration (before verification)."""
+
+    email: str
     message: str

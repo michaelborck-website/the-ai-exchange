@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlmodel import Session, SQLModel, select
 
 from app.core.security import hash_password
-from app.models import User, UserRole
+from app.models import ProfessionalRole, User, UserRole
 from app.services.database import engine
 
 
@@ -58,6 +58,7 @@ def init_db() -> None:
             full_name=full_name,
             hashed_password=hash_password(password),
             role=UserRole.ADMIN,
+            professional_role=ProfessionalRole.EDUCATOR,
             is_active=True,
             is_approved=True,
         )

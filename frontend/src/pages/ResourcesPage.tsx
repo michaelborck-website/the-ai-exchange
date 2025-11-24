@@ -52,7 +52,7 @@ export default function ResourcesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filters, setFilters] = useState<FilterState>({
-    disciplines: searchParams.get("specialty")
+    specialties: searchParams.get("specialty")
       ? [searchParams.get("specialty")!]
       : [],
     tools: [],
@@ -93,8 +93,8 @@ export default function ResourcesPage() {
         if (!matchesSearch) return false;
       }
 
-      // Discipline filter
-      if (filters.disciplines.length > 0 && resource.specialty && !filters.disciplines.includes(resource.specialty)) {
+      // Specialty filter
+      if (filters.specialties.length > 0 && resource.specialty && !filters.specialties.includes(resource.specialty)) {
         return false;
       }
 

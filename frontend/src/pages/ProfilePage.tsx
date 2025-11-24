@@ -34,7 +34,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUpdateProfile } from "@/hooks/useAuth";
 import { useResources } from "@/hooks/useResources";
 import { useUserSavedResources, useUserTriedResources } from "@/hooks/useEngagement";
-import { ProfessionalRole, PROFESSIONAL_ROLES, DISCIPLINES } from "@/types/index";
+import { ProfessionalRole, PROFESSIONAL_ROLES } from "@/types/index";
 
 function SavedIdeasSection() {
   const navigate = useNavigate();
@@ -182,8 +182,8 @@ export default function ProfilePage() {
 
   // Profile edit state
   const [fullName, setFullName] = useState(user?.full_name || "");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(
-    user?.professional_roles || ["Educator"]
+  const [selectedRoles, setSelectedRoles] = useState<ProfessionalRole[]>(
+    (user?.professional_roles as ProfessionalRole[]) || ["Educator"]
   );
   const [area, setArea] = useState(user?.area || "");
   const [isEditing, setIsEditing] = useState(false);
@@ -207,8 +207,8 @@ export default function ProfilePage() {
     return allResources.filter(resource => resource.user_id === user.id);
   }, [allResources, user?.id]);
 
-  const handleRoleToggle = (role: string) => {
-    setSelectedRoles((prev) =>
+  const handleRoleToggle = (role: ProfessionalRole) => {
+    setSelectedRoles((prev: ProfessionalRole[]) =>
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
@@ -293,14 +293,14 @@ export default function ProfilePage() {
             </VStack>
           </HStack>
 
-          {/* Disciplines/Focus Areas */}
-          {user?.disciplines && user.disciplines.length > 0 && (
+          {/* Specialties/Focus Areas */}
+          {user?.specialties && user.specialties.length > 0 && (
             <Box mt={4}>
               <Text fontSize="sm" fontWeight="bold" color="gray.700" mb={2}>
-                Disciplines & Focus
+                Specialties & Focus
               </Text>
               <HStack spacing={2} flexWrap="wrap">
-                {user.disciplines.map((specialty) => (
+                {user.specialties.map((specialty: string) => (
                   <Badge key={specialty} colorScheme="blue" variant="subtle">
                     {specialty}
                   </Badge>
@@ -464,11 +464,11 @@ export default function ProfilePage() {
                           Professional Roles (select all that apply)
                         </FormLabel>
                         <VStack align="flex-start" spacing={2}>
-                          {PROFESSIONAL_ROLES.map((role) => (
+                          {Object.keys(PROFESSIONAL_ROLES).map((role) => (
                             <Checkbox
                               key={role}
-                              isChecked={selectedRoles.includes(role)}
-                              onChange={() => handleRoleToggle(role)}
+                              isChecked={selectedRoles.includes(role as ProfessionalRole)}
+                              onChange={() => handleRoleToggle(role as ProfessionalRole)}
                               isDisabled={!isEditing}
                             >
                               <Text fontSize="sm">{role}</Text>

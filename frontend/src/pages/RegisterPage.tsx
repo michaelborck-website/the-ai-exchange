@@ -16,7 +16,6 @@ import {
   Alert,
   AlertIcon,
   useToast,
-  Select,
   FormLabel,
   Checkbox,
 } from "@chakra-ui/react";
@@ -25,9 +24,9 @@ import { useAuth } from "@/context/AuthContext";
 import { getErrorMessage } from "@/lib/api";
 import { useSpecialties } from "@/hooks/useConfig";
 import { ConfigSelect } from "@/components/ConfigSelect";
-import { ConfigValueType } from "@/types/index";
+import { ProfessionalRole } from "@/types/index";
 
-const PROFESSIONAL_ROLES = ["Educator", "Researcher", "Professional"];
+const PROFESSIONAL_ROLES: ProfessionalRole[] = ["Educator", "Researcher", "Professional"];
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [area, setArea] = useState("");
   const [specialty, setSpecialty] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<ProfessionalRole[]>([]);
   const [passwordError, setPasswordError] = useState("");
   const [apiError, setApiError] = useState("");
 
@@ -53,8 +52,8 @@ export default function RegisterPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleRoleToggle = (role: string) => {
-    setSelectedRoles((prev) =>
+  const handleRoleToggle = (role: ProfessionalRole) => {
+    setSelectedRoles((prev: ProfessionalRole[]) =>
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
@@ -165,7 +164,7 @@ export default function RegisterPage() {
               options={specialties}
               isRequired={true}
               showOtherOption={true}
-              configType={ConfigValueType.SPECIALTY}
+              configType="specialty"
               helpText="Your specialty helps others find your expertise. You can also request a new specialty if yours isn't listed."
             />
 

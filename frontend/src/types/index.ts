@@ -147,6 +147,10 @@ export interface Resource {
     email: string;
     professional_role?: ProfessionalRole;
   };
+  // Author information (from ResourceWithAuthor response)
+  author_id?: string;
+  author_name?: string;
+  author_email?: string | null;
 }
 
 export interface ResourceCreate {

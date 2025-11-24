@@ -13,13 +13,12 @@ import {
   Textarea,
   Text,
   VStack,
-  HStack,
   Checkbox,
   Button,
   useToast,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { ConfigValue, ConfigValueType } from "@/types/index";
+import { ConfigValue } from "@/types/index";
 import { apiClient } from "@/lib/api";
 import { getErrorMessage } from "@/lib/api";
 
@@ -30,7 +29,7 @@ interface ConfigSelectProps {
   options: ConfigValue[];
   isRequired?: boolean;
   showOtherOption?: boolean;
-  configType?: ConfigValueType;
+  configType?: "specialty" | "professional_role" | "resource_type";
   helpText?: string;
 }
 

@@ -277,15 +277,13 @@ export default function ProfilePage() {
               </HStack>
               {user?.professional_roles && user.professional_roles.length > 0 && (
                 <HStack spacing={2} mt={2}>
-                  <HStack spacing={1}>
-                    {user.professional_roles.map((role) => (
-                      <Badge key={role} colorScheme="teal" variant="subtle" fontSize="xs">
-                        {role}
-                      </Badge>
-                    ))}
-                  </HStack>
-                )}
-              </HStack>
+                  {user.professional_roles.map((role) => (
+                    <Badge key={role} colorScheme="teal" variant="subtle" fontSize="xs">
+                      {role}
+                    </Badge>
+                  ))}
+                </HStack>
+              )}
             </VStack>
           </HStack>
 

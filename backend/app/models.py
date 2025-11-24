@@ -205,7 +205,12 @@ class PasswordReset(SQLModel, table=True):
     @property
     def is_expired(self) -> bool:
         """Check if reset token has expired."""
-        return datetime.now(UTC) > self.expires_at
+        now = datetime.now(UTC)
+        # Ensure both datetimes are aware before comparing
+        expires_at = self.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=UTC)
+        return now > expires_at
 
     @property
     def is_valid(self) -> bool:
@@ -236,7 +241,12 @@ class EmailVerification(SQLModel, table=True):
     @property
     def is_expired(self) -> bool:
         """Check if verification code has expired."""
-        return datetime.now(UTC) > self.expires_at
+        now = datetime.now(UTC)
+        # Ensure both datetimes are aware before comparing
+        expires_at = self.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=UTC)
+        return now > expires_at
 
     @property
     def is_valid(self) -> bool:

@@ -14,6 +14,7 @@ from sqlmodel import SQLModel
 
 from app.api import (
     admin,
+    admin_config,
     analytics,
     auth,
     collections,
@@ -112,6 +113,7 @@ app.include_router(prompts.router)
 app.include_router(collections.router)
 app.include_router(analytics.router)
 app.include_router(admin.router)
+app.include_router(admin_config.router)
 app.include_router(subscriptions.router)
 
 

@@ -11,8 +11,10 @@ import {
   HStack,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useSaveResource, useIsResourceSaved, useTriedResource } from "@/hooks/useEngagement";
+import { useDeleteResource } from "@/hooks/useResources";
 import { useAuth } from "@/hooks/useAuth";
 
 export interface ResourceCardProps {
@@ -28,6 +30,7 @@ export interface ResourceCardProps {
   saves?: number;
   created_at: string;
   variant?: "home" | "browse"; // Layout variant
+  user_id?: string; // Resource owner ID, needed for admin delete capability
 }
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
@@ -43,15 +46,22 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   saves = 0,
   created_at,
   variant = "home",
+  user_id,
 }) => {
   const navigate = useNavigate();
+  const toast = useToast();
   const { user } = useAuth();
   const isLoggedIn = !!user;
 
   const saveResourceMutation = useSaveResource();
   const triedResourceMutation = useTriedResource();
+  const deleteResourceMutation = useDeleteResource();
   const { data: isSavedData } = useIsResourceSaved(id, isLoggedIn);
   const hasSaved = isSavedData ?? false;
+
+  const isOwner = user && user_id && user.id === user_id;
+  const isAdmin = user && user.role === "ADMIN";
+  const canDelete = isOwner || isAdmin;
 
   const handleLoginClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -73,6 +83,32 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
       await triedResourceMutation.mutateAsync(id);
     } catch (error) {
       console.error("Failed to mark as tried:", error);
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this resource? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await deleteResourceMutation.mutateAsync(id);
+      toast({
+        title: "Resource deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      // Optionally redirect or refresh the page
+      window.location.reload();
+    } catch {
+      toast({
+        title: "Failed to delete resource",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -171,6 +207,17 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           >
             {isLoggedIn ? (
               <>
+                {canDelete && (
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    colorScheme="red"
+                    onClick={handleDelete}
+                    isLoading={deleteResourceMutation.isPending}
+                  >
+                    Delete
+                  </Button>
+                )}
                 <Button
                   size="xs"
                   variant="ghost"
@@ -274,6 +321,17 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
         <HStack spacing={2} fontSize="sm" width="full" justify="flex-end" pt={2} borderTop="1px" borderColor="gray.100">
           {isLoggedIn ? (
             <>
+              {canDelete && (
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  colorScheme="red"
+                  onClick={handleDelete}
+                  isLoading={deleteResourceMutation.isPending}
+                >
+                  Delete
+                </Button>
+              )}
               <Button
                 size="xs"
                 variant="ghost"

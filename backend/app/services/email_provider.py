@@ -6,9 +6,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Any
 
-import requests
-
 from app.core.config import settings
+
+try:
+    import requests
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
 
 
 class EmailProvider(ABC):
@@ -165,6 +169,10 @@ class SendGridEmailProvider(EmailProvider):
     ) -> bool:
         """Send email via SendGrid API."""
         try:
+            if not HAS_REQUESTS:
+                print("Error: requests module not installed (required for SendGrid)")
+                return False
+
             if not settings.sendgrid_api_key:
                 print("Error: SENDGRID_API_KEY not configured")
                 return False

@@ -394,7 +394,7 @@ def update_resource(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ) -> ResourceResponse:
-    """Update a resource (owner only).
+    """Update a resource (owner or admin).
 
     Args:
         resource_id: Resource ID
@@ -406,8 +406,10 @@ def update_resource(
         Updated resource
 
     Raises:
-        HTTPException: If not owner or resource not found
+        HTTPException: If not owner/admin or resource not found
     """
+    from app.models import UserRole
+
     resource = session.get(Resource, resource_id)
 
     if not resource:
@@ -416,10 +418,14 @@ def update_resource(
             detail="Resource not found",
         )
 
-    if resource.user_id != current_user.id:
+    # Check if user is owner or admin
+    is_owner = resource.user_id == current_user.id
+    is_admin = current_user.role == UserRole.ADMIN
+
+    if not (is_owner or is_admin):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only resource owner can update",
+            detail="Only resource owner or admin can update",
         )
 
     # Update fields
@@ -445,7 +451,7 @@ def delete_resource(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ) -> None:
-    """Delete a resource (owner only).
+    """Delete a resource (owner or admin).
 
     Args:
         resource_id: Resource ID
@@ -453,8 +459,10 @@ def delete_resource(
         session: Database session
 
     Raises:
-        HTTPException: If not owner or resource not found
+        HTTPException: If not owner/admin or resource not found
     """
+    from app.models import UserRole
+
     resource = session.get(Resource, resource_id)
 
     if not resource:
@@ -463,10 +471,14 @@ def delete_resource(
             detail="Resource not found",
         )
 
-    if resource.user_id != current_user.id:
+    # Check if user is owner or admin
+    is_owner = resource.user_id == current_user.id
+    is_admin = current_user.role == UserRole.ADMIN
+
+    if not (is_owner or is_admin):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only resource owner can delete",
+            detail="Only resource owner or admin can delete",
         )
 
     # If this is a solution, check if there are other solutions

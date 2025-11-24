@@ -4,6 +4,7 @@
 import { Layout } from "@/components/Layout";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ResourceModeration } from "@/components/admin/ResourceModeration";
+import { AdminConfigManager } from "@/components/admin/AdminConfigManager";
 import {
   VStack,
   Heading,
@@ -127,6 +128,7 @@ export default function AdminDashboardPage() {
             <Tab>Users</Tab>
             <Tab>Resources</Tab>
             <Tab>Analytics</Tab>
+            <Tab>Configuration</Tab>
           </TabList>
 
           <TabPanels>
@@ -247,6 +249,11 @@ export default function AdminDashboardPage() {
                   ) : null}
                 </Box>
               </VStack>
+            </TabPanel>
+
+            {/* Configuration Tab */}
+            <TabPanel>
+              <AdminConfigManager />
             </TabPanel>
           </TabPanels>
         </Tabs>

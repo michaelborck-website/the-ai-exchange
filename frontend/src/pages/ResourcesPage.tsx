@@ -41,6 +41,7 @@ interface ResourceCardData {
   tried: number;
   saves?: number;
   created_at: string;
+  user_id: string;
 }
 
 export default function ResourcesPage() {
@@ -148,6 +149,7 @@ export default function ResourcesPage() {
       tried: resource.analytics?.tried_count || 0,
       saves: resource.analytics?.save_count || 0,
       created_at: resource.created_at,
+      user_id: resource.user_id,
     }));
   }, [sortedResources]);
 
@@ -232,6 +234,7 @@ export default function ResourcesPage() {
                       saves={resource.saves}
                       created_at={resource.created_at}
                       variant="browse"
+                      user_id={resource.user_id}
                     />
                   ))}
                 </SimpleGrid>

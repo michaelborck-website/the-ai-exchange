@@ -69,6 +69,8 @@ export default function ResourceDetailPage() {
   }, [resource?.id, resource?.discipline, allResources]);
 
   const isOwner = user && resource && user.id === resource.user_id;
+  const isAdmin = user && user.role === "ADMIN";
+  const canDelete = isOwner || isAdmin;
 
   const handleEdit = () => {
     navigate(`/resources/${id}/edit`);
@@ -199,15 +201,17 @@ export default function ResourceDetailPage() {
                     </Text>
                   </VStack>
 
-                  {isOwner && (
+                  {canDelete && (
                     <HStack spacing={2}>
-                      <Button
-                        size="sm"
-                        colorScheme="blue"
-                        onClick={handleEdit}
-                      >
-                        Edit
-                      </Button>
+                      {canDelete && (
+                        <Button
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={handleEdit}
+                        >
+                          Edit
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         colorScheme="red"

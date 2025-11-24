@@ -100,6 +100,7 @@ export default function HomePage() {
         tried: resource.analytics?.tried_count || 0,
         saves: resource.analytics?.save_count || 0,
         created_at: resource.created_at,
+        user_id: resource.user_id,
       }));
   }, [allResources]);
 
@@ -120,6 +121,7 @@ export default function HomePage() {
         tried: resource.analytics?.tried_count || 0,
         saves: resource.analytics?.save_count || 0,
         created_at: resource.created_at,
+        user_id: resource.user_id,
       }));
   }, [allResources]);
 
@@ -217,6 +219,7 @@ export default function HomePage() {
                   tried={r.tried}
                   saves={r.saves}
                   created_at={r.created_at}
+                  user_id={r.user_id}
                 />
               ))}
             </SimpleGrid>
@@ -247,7 +250,7 @@ export default function HomePage() {
                   id={r.id}
                   title={r.title}
                   author={r.author}
-                  discipline={r.discipline}
+                  area={r.discipline}
                   tools={r.tools}
                   quickSummary={r.quickSummary}
                   timeSaved={r.timeSaved}
@@ -255,6 +258,7 @@ export default function HomePage() {
                   tried={r.tried}
                   saves={r.saves}
                   created_at={r.created_at}
+                  user_id={r.user_id}
                 />
               ))}
             </SimpleGrid>

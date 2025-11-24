@@ -23,7 +23,9 @@ import {
 import { useRegister } from "@/hooks/useAuth";
 import { useAuth } from "@/context/AuthContext";
 import { getErrorMessage } from "@/lib/api";
-import { Discipline, DISCIPLINES } from "@/types/index";
+import { useSpecialties } from "@/hooks/useConfig";
+import { ConfigSelect } from "@/components/ConfigSelect";
+import { ConfigValueType } from "@/types/index";
 
 const PROFESSIONAL_ROLES = ["Educator", "Researcher", "Professional"];
 
@@ -32,12 +34,14 @@ export default function RegisterPage() {
   const toast = useToast();
   const { isAuthenticated } = useAuth();
   const registerMutation = useRegister();
+  const { data: specialties = [] } = useSpecialties();
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [area, setArea] = useState("");
+  const [specialty, setSpecialty] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [passwordError, setPasswordError] = useState("");
   const [apiError, setApiError] = useState("");
@@ -88,6 +92,7 @@ export default function RegisterPage() {
         password,
         professional_roles: selectedRoles,
         area,
+        specialties: specialty ? [specialty] : [],
       });
 
       toast({
@@ -153,26 +158,16 @@ export default function RegisterPage() {
               </Text>
             </Box>
 
-            <Box width="full">
-              <FormLabel fontSize="sm" fontWeight="medium" mb={2}>
-                Area / Department
-              </FormLabel>
-              <Select
-                value={area}
-                onChange={(e) => setArea(e.target.value)}
-                placeholder="Select your area"
-                required
-              >
-                {DISCIPLINES.map((discipline) => (
-                  <option key={discipline} value={discipline}>
-                    {discipline}
-                  </option>
-                ))}
-              </Select>
-              <Text fontSize="xs" color="gray.600" mt={1}>
-                Your area is automatically linked to the ideas you share
-              </Text>
-            </Box>
+            <ConfigSelect
+              label="Professional Specialty"
+              value={specialty}
+              onChange={setSpecialty}
+              options={specialties}
+              isRequired={true}
+              showOtherOption={true}
+              configType={ConfigValueType.SPECIALTY}
+              helpText="Your specialty helps others find your expertise. You can also request a new specialty if yours isn't listed."
+            />
 
             <Box width="full">
               <FormLabel fontSize="sm" fontWeight="medium" mb={2}>

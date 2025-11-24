@@ -185,7 +185,6 @@ export default function ProfilePage() {
   const [selectedRoles, setSelectedRoles] = useState<ProfessionalRole[]>(
     (user?.professional_roles as ProfessionalRole[]) || ["Educator"]
   );
-  const [area, setArea] = useState(user?.area || "");
   const [isEditing, setIsEditing] = useState(false);
 
   // Notification preferences
@@ -276,11 +275,8 @@ export default function ProfilePage() {
                   You
                 </Badge>
               </HStack>
-              <HStack spacing={2} mt={2}>
-                <Text color="gray.600" fontSize="sm">
-                  {user?.area || "General"}
-                </Text>
-                {user?.professional_roles && user.professional_roles.length > 0 && (
+              {user?.professional_roles && user.professional_roles.length > 0 && (
+                <HStack spacing={2} mt={2}>
                   <HStack spacing={1}>
                     {user.professional_roles.map((role) => (
                       <Badge key={role} colorScheme="teal" variant="subtle" fontSize="xs">
@@ -443,21 +439,6 @@ export default function ProfilePage() {
                         />
                       </FormControl>
 
-                      {/* Area / Department */}
-                      <FormControl>
-                        <FormLabel fontSize="sm" fontWeight="semibold">
-                          Area / Department
-                        </FormLabel>
-                        <Input
-                          value={area}
-                          disabled
-                          bg="gray.50"
-                        />
-                        <Text fontSize="xs" color="gray.600" mt={1}>
-                          Contact your administrator to change your area
-                        </Text>
-                      </FormControl>
-
                       {/* Professional Roles */}
                       <FormControl>
                         <FormLabel fontSize="sm" fontWeight="semibold" mb={3}>
@@ -537,7 +518,6 @@ export default function ProfilePage() {
                                 setIsEditing(false);
                                 setFullName(user?.full_name || "");
                                 setSelectedRoles(user?.professional_roles || ["Educator"]);
-                                setArea(user?.area || "");
                               }}
                             >
                               Cancel

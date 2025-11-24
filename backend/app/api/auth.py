@@ -200,7 +200,7 @@ def register(
         hashed_password=hash_password(user_create.password),
         role=UserRole.ADMIN if is_first_user else UserRole.STAFF,
         is_active=True,
-        is_verified=is_first_user,  # First user auto-verified
+        is_verified=False,  # All users must verify email
         is_approved=is_approved,  # Auto-approve if whitelisted or from allowed domain
         disciplines=user_create.disciplines or [],
     )
@@ -209,30 +209,29 @@ def register(
     session.commit()
     session.refresh(new_user)
 
-    # Generate 6-digit verification code
-    if not is_first_user:
-        digits = string.digits
-        verification_code = "".join(secrets.choice(digits) for _ in range(6))
+    # Generate 6-digit verification code for all users
+    digits = string.digits
+    verification_code = "".join(secrets.choice(digits) for _ in range(6))
 
-        # Create EmailVerification record
-        verification = EmailVerification(
-            user_id=new_user.id,
-            code=verification_code,
-            expires_at=datetime.now(UTC) + timedelta(minutes=60),
-        )
-        session.add(verification)
-        session.commit()
+    # Create EmailVerification record
+    verification = EmailVerification(
+        user_id=new_user.id,
+        code=verification_code,
+        expires_at=datetime.now(UTC) + timedelta(minutes=60),
+    )
+    session.add(verification)
+    session.commit()
 
-        # Send verification email
-        try:
-            send_verification_email(new_user, verification_code)
-        except Exception as e:
-            # Log error but continue - email may fail in dev environment
-            print(f"Warning: Failed to send verification email: {e}")
+    # Send verification email
+    try:
+        send_verification_email(new_user, verification_code)
+    except Exception as e:
+        # Log error but continue - email may fail in dev environment
+        print(f"Warning: Failed to send verification email: {e}")
 
     return UserRegistrationResponse(
         email=new_user.email,
-        message="Registration successful. Please check your email for verification code." if not is_first_user else "First user registered. You are verified and can now log in.",
+        message="Registration successful. Please check your email for verification code.",
     )
 
 

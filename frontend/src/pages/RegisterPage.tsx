@@ -70,13 +70,13 @@ export default function RegisterPage() {
 
       toast({
         title: "Account created successfully",
-        description: `Welcome, ${response.full_name}!`,
+        description: `Welcome, ${response.full_name}! Please verify your email to complete registration.`,
         status: "success",
         duration: 3000,
         isClosable: true,
       });
 
-      navigate("/");
+      navigate("/verify-email", { state: { email } });
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       setApiError(errorMessage);

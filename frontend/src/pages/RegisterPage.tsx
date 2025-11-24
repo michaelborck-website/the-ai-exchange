@@ -39,7 +39,6 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [area, setArea] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<ProfessionalRole[]>([]);
   const [passwordError, setPasswordError] = useState("");
@@ -64,8 +63,8 @@ export default function RegisterPage() {
     setApiError("");
 
     // Validation
-    if (!area) {
-      setApiError("Area/Department is required");
+    if (!specialty) {
+      setApiError("Professional Specialty is required");
       return;
     }
 
@@ -90,7 +89,6 @@ export default function RegisterPage() {
         full_name: fullName,
         password,
         professional_roles: selectedRoles,
-        area,
         specialties: specialty ? [specialty] : [],
       });
 

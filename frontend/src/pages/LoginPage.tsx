@@ -64,13 +64,31 @@ export default function LoginPage() {
       navigate("/");
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
-      toast({
-        title: "Login failed",
-        description: errorMessage,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+
+      // Check if error is due to unverified account
+      if (
+        error instanceof Object &&
+        "response" in error &&
+        (error.response as any)?.status === 403 &&
+        (error.response as any)?.data?.detail?.includes("not verified")
+      ) {
+        toast({
+          title: "Account not verified",
+          description: "Please verify your email first.",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+        navigate("/verify-email", { state: { email } });
+      } else {
+        toast({
+          title: "Login failed",
+          description: errorMessage,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 

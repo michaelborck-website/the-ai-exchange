@@ -23,14 +23,10 @@ export function useLogin() {
 }
 
 export function useRegister() {
-  const { setUser } = useAuthContext();
-
   return useMutation({
     mutationFn: (data: RegisterRequest) => apiClient.register(data),
-    onSuccess: (response) => {
-      // User is automatically logged in after registration
-      setUser(response);
-    },
+    // Don't auto-login - user must verify email first
+    // onSuccess is not used because registration doesn't return token data
   });
 }
 
@@ -48,9 +44,15 @@ export function useLogout() {
 }
 
 export function useVerifyEmail() {
+  const { setUser } = useAuthContext();
+
   return useMutation({
     mutationFn: (data: { email: string; code: string }) =>
       apiClient.verifyEmail(data.email, data.code),
+    onSuccess: (response) => {
+      // Log user in after successful email verification
+      setUser(response);
+    },
   });
 }
 

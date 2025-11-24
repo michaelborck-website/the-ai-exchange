@@ -3,11 +3,12 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
+from app.core.config import settings
 from app.models import ConfigValueType, ConfigurableValue
 from app.services.config import ConfigService
 from app.services.database import get_session
 
-router = APIRouter(prefix="/config", tags=["config"])
+router = APIRouter(prefix=f"{settings.api_v1_str}/config", tags=["config"])
 
 
 class ConfigValueResponse:

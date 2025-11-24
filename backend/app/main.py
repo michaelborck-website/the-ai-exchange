@@ -19,6 +19,8 @@ from app.api import (
     auth,
     collections,
     comments,
+    config,
+    config_requests,
     prompts,
     resources,
     subscriptions,
@@ -127,6 +129,8 @@ app.include_router(analytics.router)
 app.include_router(admin.router)
 app.include_router(admin_config.router)
 app.include_router(subscriptions.router)
+app.include_router(config.router)
+app.include_router(config_requests.router)
 
 
 # API v1 routes

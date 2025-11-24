@@ -18,11 +18,14 @@ import {
   useToast,
   Select,
   FormLabel,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useRegister } from "@/hooks/useAuth";
 import { useAuth } from "@/context/AuthContext";
 import { getErrorMessage } from "@/lib/api";
-import { ProfessionalRole, PROFESSIONAL_ROLES } from "@/types/index";
+import { Discipline, DISCIPLINES } from "@/types/index";
+
+const PROFESSIONAL_ROLES = ["Educator", "Researcher", "Professional"];
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -34,7 +37,8 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [professionalRole, setProfessionalRole] = useState<ProfessionalRole>("Educator");
+  const [area, setArea] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [passwordError, setPasswordError] = useState("");
   const [apiError, setApiError] = useState("");
 
@@ -45,10 +49,27 @@ export default function RegisterPage() {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleRoleToggle = (role: string) => {
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordError("");
     setApiError("");
+
+    // Validation
+    if (!area) {
+      setApiError("Area/Department is required");
+      return;
+    }
+
+    if (selectedRoles.length === 0) {
+      setApiError("Please select at least one professional role");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
@@ -65,7 +86,8 @@ export default function RegisterPage() {
         email,
         full_name: fullName,
         password,
-        professional_role: professionalRole,
+        professional_roles: selectedRoles,
+        area,
       });
 
       toast({
@@ -133,17 +155,43 @@ export default function RegisterPage() {
 
             <Box width="full">
               <FormLabel fontSize="sm" fontWeight="medium" mb={2}>
-                Professional Role
+                Area / Department
               </FormLabel>
               <Select
-                value={professionalRole}
-                onChange={(e) => setProfessionalRole(e.target.value as ProfessionalRole)}
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                placeholder="Select your area"
                 required
               >
-                <option value="Educator">Educator</option>
-                <option value="Researcher">Researcher</option>
-                <option value="Professional">Professional</option>
+                {DISCIPLINES.map((discipline) => (
+                  <option key={discipline} value={discipline}>
+                    {discipline}
+                  </option>
+                ))}
               </Select>
+              <Text fontSize="xs" color="gray.600" mt={1}>
+                Your area is automatically linked to the ideas you share
+              </Text>
+            </Box>
+
+            <Box width="full">
+              <FormLabel fontSize="sm" fontWeight="medium" mb={2}>
+                Professional Roles (select all that apply)
+              </FormLabel>
+              <VStack align="flex-start" spacing={2}>
+                {PROFESSIONAL_ROLES.map((role) => (
+                  <Checkbox
+                    key={role}
+                    isChecked={selectedRoles.includes(role)}
+                    onChange={() => handleRoleToggle(role)}
+                  >
+                    <Text fontSize="sm">{role}</Text>
+                  </Checkbox>
+                ))}
+              </VStack>
+              <Text fontSize="xs" color="gray.600" mt={2}>
+                Select all roles that apply to you. This helps others find the right expertise.
+              </Text>
             </Box>
 
             <Box width="full">

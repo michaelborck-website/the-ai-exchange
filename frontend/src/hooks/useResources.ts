@@ -11,7 +11,7 @@ export function useResources(params?: {
   tag?: string;
   search?: string;
   status?: string;
-  discipline?: string;
+  specialty?: string;
   tools?: string;
   min_time_saved?: number;
   sort_by?: string;

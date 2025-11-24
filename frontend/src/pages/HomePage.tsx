@@ -31,7 +31,7 @@ interface DisciplineCard {
   icon?: string;
 }
 
-function DisciplineGridItem({ discipline }: { discipline: DisciplineCard }) {
+function DisciplineGridItem({ specialty }: { specialty: DisciplineCard }) {
   const navigate = useNavigate();
 
   return (
@@ -45,11 +45,11 @@ function DisciplineGridItem({ discipline }: { discipline: DisciplineCard }) {
       cursor="pointer"
       _hover={{ bg: "gray.50", borderColor: "blue.400" }}
       transition="all 0.2s"
-      onClick={() => navigate(`/resources?discipline=${discipline.name}`)}
+      onClick={() => navigate(`/resources?specialty=${specialty.name}`)}
     >
-      <Heading size="md">{discipline.name}</Heading>
+      <Heading size="md">{specialty.name}</Heading>
       <Text color="gray.600" fontSize="sm">
-        {discipline.count} ideas
+        {specialty.count} ideas
       </Text>
     </Box>
   );
@@ -68,10 +68,10 @@ export default function HomePage() {
     const disciplineMap = new Map<string, number>();
 
     allResources.forEach(resource => {
-      if (resource.discipline) {
+      if (resource.specialty) {
         disciplineMap.set(
-          resource.discipline,
-          (disciplineMap.get(resource.discipline) || 0) + 1
+          resource.specialty,
+          (disciplineMap.get(resource.specialty) || 0) + 1
         );
       }
     });
@@ -92,7 +92,7 @@ export default function HomePage() {
         id: resource.id,
         title: resource.title,
         author: resource.author_name || "Faculty Member",
-        discipline: resource.discipline,
+        specialty: resource.specialty,
         tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
         timeSaved: resource.time_saved_value,
@@ -113,7 +113,7 @@ export default function HomePage() {
         id: resource.id,
         title: resource.title,
         author: resource.author_name || "Faculty Member",
-        discipline: resource.discipline,
+        specialty: resource.specialty,
         tools: flattenTools(resource.tools_used),
         quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
         timeSaved: resource.time_saved_value,
@@ -182,7 +182,7 @@ export default function HomePage() {
           <Heading size="lg">Explore by Area</Heading>
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4}>
             {disciplines.map((d) => (
-              <DisciplineGridItem key={d.name} discipline={d} />
+              <DisciplineGridItem key={d.name} specialty={d} />
             ))}
           </SimpleGrid>
         </VStack>
@@ -211,7 +211,7 @@ export default function HomePage() {
                   id={r.id}
                   title={r.title}
                   author={r.author}
-                  area={r.discipline}
+                  area={r.specialty}
                   tools={r.tools}
                   quickSummary={r.quickSummary}
                   timeSaved={r.timeSaved}
@@ -250,7 +250,7 @@ export default function HomePage() {
                   id={r.id}
                   title={r.title}
                   author={r.author}
-                  area={r.discipline}
+                  area={r.specialty}
                   tools={r.tools}
                   quickSummary={r.quickSummary}
                   timeSaved={r.timeSaved}

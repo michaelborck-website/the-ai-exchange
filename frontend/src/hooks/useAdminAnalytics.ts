@@ -50,14 +50,14 @@ export const usePlatformAnalytics = () => {
 };
 
 /**
- * Fetch analytics breakdown by discipline
+ * Fetch analytics breakdown by specialty
  */
 export const useAnalyticsByDiscipline = () => {
   return useQuery({
     queryKey: ["adminAnalyticsByDiscipline"],
     queryFn: async () => {
       const response = await apiClient.get<AnalyticsByDiscipline>(
-        "/admin/analytics/by-discipline"
+        "/admin/analytics/by-specialty"
       );
       return response.data;
     },

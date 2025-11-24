@@ -24,7 +24,7 @@ interface SavedResource {
   title: string;
   content_text: string;
   type: string;
-  discipline: string | null;
+  specialty: string | null;
   user?: {
     id: string;
     full_name: string;

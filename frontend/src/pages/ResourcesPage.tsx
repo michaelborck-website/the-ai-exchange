@@ -52,8 +52,8 @@ export default function ResourcesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filters, setFilters] = useState<FilterState>({
-    disciplines: searchParams.get("discipline")
-      ? [searchParams.get("discipline")!]
+    disciplines: searchParams.get("specialty")
+      ? [searchParams.get("specialty")!]
       : [],
     tools: [],
     professionalRoles: [],
@@ -87,14 +87,14 @@ export default function ResourcesPage() {
         const matchesSearch =
           resource.title.toLowerCase().includes(searchLower) ||
           resource.content_text?.toLowerCase().includes(searchLower) ||
-          resource.discipline?.toLowerCase().includes(searchLower) ||
+          resource.specialty?.toLowerCase().includes(searchLower) ||
           // Only allow logged-in users to search by author name (privacy consideration)
           (isLoggedIn && resource.author_name?.toLowerCase().includes(searchLower));
         if (!matchesSearch) return false;
       }
 
       // Discipline filter
-      if (filters.disciplines.length > 0 && resource.discipline && !filters.disciplines.includes(resource.discipline)) {
+      if (filters.disciplines.length > 0 && resource.specialty && !filters.disciplines.includes(resource.specialty)) {
         return false;
       }
 
@@ -142,7 +142,7 @@ export default function ResourcesPage() {
       id: resource.id,
       title: resource.title,
       author: resource.author_name || "Faculty Member",
-      area: resource.discipline,
+      area: resource.specialty,
       tools: flattenTools(resource.tools_used),
       quickSummary: resource.quick_summary || resource.content_text?.substring(0, 100),
       timeSaved: resource.time_saved_value,

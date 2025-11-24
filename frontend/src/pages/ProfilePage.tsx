@@ -89,7 +89,7 @@ function SavedIdeasSection() {
             <VStack align="flex-start" spacing={3}>
               <HStack>
                 <Badge colorScheme="blue" variant="subtle">
-                  {resource.discipline || "General"}
+                  {resource.specialty || "General"}
                 </Badge>
               </HStack>
               <Heading size="sm">{resource.title}</Heading>
@@ -158,7 +158,7 @@ function TriedResourcesSection() {
             <VStack align="flex-start" spacing={3}>
               <HStack>
                 <Badge colorScheme="green" variant="subtle">
-                  {resource.discipline || "General"}
+                  {resource.specialty || "General"}
                 </Badge>
               </HStack>
               <Heading size="sm">{resource.title}</Heading>
@@ -300,9 +300,9 @@ export default function ProfilePage() {
                 Disciplines & Focus
               </Text>
               <HStack spacing={2} flexWrap="wrap">
-                {user.disciplines.map((discipline) => (
-                  <Badge key={discipline} colorScheme="blue" variant="subtle">
-                    {discipline}
+                {user.disciplines.map((specialty) => (
+                  <Badge key={specialty} colorScheme="blue" variant="subtle">
+                    {specialty}
                   </Badge>
                 ))}
               </HStack>
@@ -366,7 +366,7 @@ export default function ProfilePage() {
                           <VStack align="flex-start" spacing={3}>
                             <HStack>
                               <Badge colorScheme="blue" variant="subtle">
-                                {contribution.discipline || "General"}
+                                {contribution.specialty || "General"}
                               </Badge>
                             </HStack>
                             <Heading size="sm">{contribution.title}</Heading>

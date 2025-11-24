@@ -226,9 +226,9 @@ export default function AdminDashboardPage() {
                     </Center>
                   ) : disciplineData?.by_discipline ? (
                     <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-                      {Object.entries(disciplineData.by_discipline).map(([discipline, stats]: [string, any]) => (
-                        <Box key={discipline} bg="white" p={4} borderRadius="lg" boxShadow="sm">
-                          <Text fontWeight="semibold" mb={3}>{discipline}</Text>
+                      {Object.entries(disciplineData.by_discipline).map(([specialty, stats]: [string, any]) => (
+                        <Box key={specialty} bg="white" p={4} borderRadius="lg" boxShadow="sm">
+                          <Text fontWeight="semibold" mb={3}>{specialty}</Text>
                           <SimpleGrid columns={{ base: 3 }} gap={3}>
                             <Box>
                               <Text fontSize="xs" color="gray.600">Resources</Text>

@@ -1,6 +1,6 @@
 /**
  * Filter Sidebar Component for Browse Page
- * Provides advanced filtering by discipline, tools, and quick wins
+ * Provides advanced filtering by specialty, tools, and quick wins
  */
 
 import {
@@ -31,7 +31,7 @@ interface FilterSidebarProps {
 }
 
 export interface FilterState {
-  disciplines: string[];
+  specialties: string[];
   tools: string[];
   professionalRoles: ProfessionalRole[];
   minTimeSaved: number;
@@ -39,16 +39,16 @@ export interface FilterState {
 }
 
 /**
- * Extract unique disciplines from resources
+ * Extract unique specialties from resources
  */
-function extractDisciplines(resources: Resource[]): string[] {
-  const disciplines = new Set<string>();
+function extractSpecialties(resources: Resource[]): string[] {
+  const specialties = new Set<string>();
   resources.forEach((resource) => {
-    if (resource.discipline) {
-      disciplines.add(resource.discipline);
+    if (resource.specialty) {
+      specialties.add(resource.specialty);
     }
   });
-  return Array.from(disciplines).sort();
+  return Array.from(specialties).sort();
 }
 
 /**
@@ -91,8 +91,8 @@ export function FilterSidebar({
   const resources = propResources || fetchedResources;
   const isLoading = propResources ? false : isFetching;
 
-  // Extract unique disciplines and tool categories from resources
-  const disciplines = useMemo(() => extractDisciplines(resources), [resources]);
+  // Extract unique specialties and tool categories from resources
+  const specialties = useMemo(() => extractSpecialties(resources), [resources]);
   const toolCategories = useMemo(
     () => extractToolCategories(resources),
     [resources]
@@ -100,7 +100,7 @@ export function FilterSidebar({
 
   const [filters, setFilters] = useState<FilterState>(
     initialFilters || {
-      disciplines: [],
+      specialties: [],
       tools: [],
       professionalRoles: [],
       minTimeSaved: 0,
@@ -108,12 +108,12 @@ export function FilterSidebar({
     }
   );
 
-  const handleDisciplineChange = (discipline: string) => {
-    const updated = filters.disciplines.includes(discipline)
-      ? filters.disciplines.filter((d) => d !== discipline)
-      : [...filters.disciplines, discipline];
+  const handleSpecialtyChange = (specialty: string) => {
+    const updated = filters.specialties.includes(specialty)
+      ? filters.specialties.filter((s) => s !== specialty)
+      : [...filters.specialties, specialty];
 
-    const newFilters = { ...filters, disciplines: updated };
+    const newFilters = { ...filters, specialties: updated };
     setFilters(newFilters);
     onFiltersChange(newFilters);
   };
@@ -154,7 +154,7 @@ export function FilterSidebar({
 
   const handleReset = () => {
     const resetFilters: FilterState = {
-      disciplines: [],
+      specialties: [],
       tools: [],
       professionalRoles: [],
       minTimeSaved: 0,
@@ -165,7 +165,7 @@ export function FilterSidebar({
   };
 
   const activeFilterCount =
-    filters.disciplines.length +
+    filters.specialties.length +
     filters.tools.length +
     filters.professionalRoles.length +
     (filters.minTimeSaved > 0 ? 1 : 0);
@@ -229,26 +229,26 @@ export function FilterSidebar({
 
         <Divider />
 
-        {/* Area */}
+        {/* Specialty */}
         <VStack align="stretch" spacing={3}>
           <Text fontSize="sm" fontWeight="semibold" color="gray.700">
-            Area
+            Specialty
           </Text>
           {isLoading ? (
             <Spinner size="sm" />
-          ) : disciplines.length === 0 ? (
+          ) : specialties.length === 0 ? (
             <Text fontSize="sm" color="gray.500">
-              No areas available
+              No specialties available
             </Text>
           ) : (
             <VStack align="stretch" spacing={2}>
-              {disciplines.map((discipline) => (
+              {specialties.map((specialty) => (
                 <Checkbox
-                  key={discipline}
-                  isChecked={filters.disciplines.includes(discipline)}
-                  onChange={() => handleDisciplineChange(discipline)}
+                  key={specialty}
+                  isChecked={filters.specialties.includes(specialty)}
+                  onChange={() => handleSpecialtyChange(specialty)}
                 >
-                  {discipline}
+                  {specialty}
                 </Checkbox>
               ))}
             </VStack>

@@ -56,17 +56,17 @@ export default function ResourceDetailPage() {
     };
   }, [resource?.analytics]);
 
-  // Get similar resources based on discipline
+  // Get similar resources based on specialty
   const similarResources = useMemo(() => {
-    if (!resource?.discipline) return [];
+    if (!resource?.specialty) return [];
     return allResources
       .filter(
         (r) =>
           r.id !== resource.id && // Don't include current resource
-          r.discipline === resource.discipline // Same discipline
+          r.specialty === resource.specialty // Same specialty
       )
       .slice(0, 2); // Limit to 2 similar ideas
-  }, [resource?.id, resource?.discipline, allResources]);
+  }, [resource?.id, resource?.specialty, allResources]);
 
   const isOwner = user && resource && user.id === resource.user_id;
   const isAdmin = user && user.role === "ADMIN";
@@ -388,7 +388,7 @@ export default function ResourceDetailPage() {
                       </Text>
                       {similarResources.length === 0 ? (
                         <Text fontSize="xs" color="gray.500" fontStyle="italic">
-                          No similar ideas in this discipline
+                          No similar ideas in this specialty
                         </Text>
                       ) : (
                         <VStack align="stretch" spacing={2}>
@@ -407,7 +407,7 @@ export default function ResourceDetailPage() {
                                 {similar.title}
                               </Text>
                               <Text fontSize="xs" color="gray.600" mt={1}>
-                                by {similar.author_name || "Faculty Member"} • {similar.discipline}
+                                by {similar.author_name || "Faculty Member"} • {similar.specialty}
                               </Text>
                             </Box>
                           ))}

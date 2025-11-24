@@ -186,7 +186,7 @@ export interface ResourceCard {
   id: string;
   title: string;
   author: string;
-  discipline?: string;
+  specialty?: string;
   tools: string[];
   quickSummary: string;
   timeSaved?: number;
@@ -198,7 +198,7 @@ export interface ResourcePreview {
   id: string;
   title: string;
   author: string;
-  discipline?: string;
+  specialty?: string;
   tools: string[];
   quickSummary: string;
   timeSaved?: number;

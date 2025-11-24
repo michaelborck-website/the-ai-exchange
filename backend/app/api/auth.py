@@ -212,8 +212,7 @@ def register(
         is_verified=False,  # All users must verify email
         is_approved=is_approved,  # Auto-approve if whitelisted or from allowed domain
         professional_roles=professional_roles,
-        area=user_create.area or "General",
-        disciplines=user_create.disciplines or [],
+        specialties=user_create.specialties or [],
     )
 
     session.add(new_user)
@@ -331,7 +330,7 @@ def verify_email(
         is_active=user.is_active,
         is_verified=user.is_verified,
         is_approved=user.is_approved,
-        disciplines=user.disciplines,
+        specialties=user.specialties,
         notification_prefs=user.notification_prefs,
         created_at=user.created_at,
         access_token=access_token,
@@ -401,7 +400,7 @@ def login(
         is_active=user.is_active,
         is_verified=user.is_verified,
         is_approved=user.is_approved,
-        disciplines=user.disciplines,
+        specialties=user.specialties,
         notification_prefs=user.notification_prefs,
         created_at=user.created_at,
         access_token=access_token,

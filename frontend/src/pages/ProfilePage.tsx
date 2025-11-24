@@ -226,7 +226,6 @@ export default function ProfilePage() {
         <Tabs variant="soft-rounded" colorScheme="blue">
           <TabList>
             <Tab>Contributions ({userContributions.length})</Tab>
-            <Tab>Collaboration</Tab>
             <Tab>Settings</Tab>
           </TabList>
 
@@ -308,26 +307,6 @@ export default function ProfilePage() {
                   <SavedIdeasSection />
                 </Box>
               </VStack>
-            </TabPanel>
-
-            {/* Collaboration Tab */}
-            <TabPanel>
-              <Box bg="blue.50" p={6} borderRadius="lg" border="1px" borderColor="blue.200">
-                <VStack align="flex-start" spacing={3}>
-                  <Heading size="md" color="blue.900">
-                    Collaboration Features Coming Soon
-                  </Heading>
-                  <Text fontSize="sm" color="blue.800">
-                    We're building enhanced collaboration features to help you find and connect with colleagues on shared research interests and projects. This section will include:
-                  </Text>
-                  <VStack align="flex-start" spacing={2} ml={4} fontSize="sm" color="blue.800">
-                    <Text>• Share what you're currently working on</Text>
-                    <Text>• Highlight topics you're open to collaborating on</Text>
-                    <Text>• Direct messaging with interested colleagues</Text>
-                    <Text>• Shared calendar for coordination</Text>
-                  </VStack>
-                </VStack>
-              </Box>
             </TabPanel>
 
             {/* Settings Tab */}

@@ -153,10 +153,6 @@ class User(SQLModel, table=True):
         description="Professional roles (Educator, Researcher, Professional)",
         sa_column=Column(JSON),
     )
-    area: str = Field(
-        default="General",
-        description="User's area/school/department (auto-assigned at registration)",
-    )
     is_active: bool = Field(default=True)
     is_verified: bool = Field(default=False)
     is_approved: bool = Field(default=True)
@@ -577,7 +573,6 @@ class UserResponse(UserBase):
     id: UUID
     role: UserRole
     professional_roles: list[str]
-    area: str
     is_active: bool
     is_verified: bool
     is_approved: bool

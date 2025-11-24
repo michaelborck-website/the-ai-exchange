@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.models import ConfigRequestStatus, ConfigValueType, UserConfigRequest
-from app.core.security import get_current_user
+from app.api.auth import get_current_user
 from app.services.database import get_session
 
 router = APIRouter(prefix="/config/requests", tags=["config-requests"])

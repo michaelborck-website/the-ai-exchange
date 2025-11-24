@@ -21,12 +21,29 @@ const API_BASE_URL = "/api/v1";
  * Extract error message from API error response
  */
 function getErrorMessage(error: any): string {
-  if (error.response?.data?.detail) {
+  // Handle FastAPI validation errors (422)
+  if (error.response?.data?.detail && Array.isArray(error.response.data.detail)) {
+    const messages = error.response.data.detail.map(
+      (err: any) => `${err.loc?.[1] || "Field"}: ${err.msg}`
+    );
+    return messages.join(", ");
+  }
+
+  // Handle string detail messages
+  if (error.response?.data?.detail && typeof error.response.data.detail === "string") {
     return error.response.data.detail;
   }
+
+  // Handle other error responses
+  if (error.response?.data?.message) {
+    return error.response.data.message;
+  }
+
+  // Handle network/client errors
   if (error.message) {
     return error.message;
   }
+
   return "An error occurred. Please try again.";
 }
 

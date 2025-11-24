@@ -10,19 +10,43 @@ export const PROFESSIONAL_ROLES: Record<ProfessionalRole, string> = {
   "Professional": "Professional",
 };
 
-export type Discipline = string;
+// Configuration types
+export interface ConfigValue {
+  key: string;
+  label: string;
+  description?: string;
+  category?: string;
+}
 
-export const DISCIPLINES: Discipline[] = [
-  "Marketing",
-  "Management",
-  "Business",
-  "Education",
-  "Technology",
-  "Healthcare",
-  "Finance",
-  "Operations",
-  "Strategy",
-  "Other"
+export interface ConfigResponse {
+  specialties: ConfigValue[];
+  professional_roles: ConfigValue[];
+  resource_types: ConfigValue[];
+}
+
+export interface ConfigListResponse {
+  items: ConfigValue[];
+  total: number;
+}
+
+// Keep for backward compatibility during migration
+export type Specialty = string;
+export const SPECIALTIES: Specialty[] = [
+  "marketing",
+  "bis",
+  "innovation_entrepreneurship",
+  "people_culture",
+  "tourism_hospitality",
+  "future_of_work",
+  "john_curtin_institute",
+  "luxury_branding",
+  "tourism_research",
+  "acses",
+  "management_exec_support",
+  "lt_planning",
+  "lt_support",
+  "operations_admin",
+  "other"
 ];
 
 export interface User {
@@ -36,7 +60,7 @@ export interface User {
   is_active: boolean;
   is_approved: boolean;
   is_verified?: boolean;
-  disciplines: string[];
+  specialties: string[];
   notification_prefs: {
     notify_requests: boolean;
     notify_solutions: boolean;
@@ -61,7 +85,7 @@ export interface RegisterRequest {
   password: string;
   professional_roles?: ProfessionalRole[];
   area?: string;
-  disciplines?: string[];
+  specialties?: string[];
 }
 
 export interface UserUpdateRequest {
@@ -94,7 +118,7 @@ export interface Resource {
   created_at: string;
   updated_at: string;
   // Metadata fields
-  discipline?: string;
+  specialty?: string;
   author_title?: string;
   tools_used?: Record<string, string[]>; // Categorized tools, e.g., { "LLM": ["Claude"], "CUSTOM_APP": ["Talk-Buddy"] }
   tools_used_flat?: string[]; // Flattened list of all tools

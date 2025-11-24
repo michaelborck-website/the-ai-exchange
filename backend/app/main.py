@@ -29,6 +29,7 @@ from app.core.config import settings
 from app.core.rate_limiter import limiter
 from app.services.config import ConfigService
 from app.services.database import engine, get_session
+from sqlmodel import Session
 
 # Configure logging
 logging.basicConfig(level=settings.log_level)
@@ -45,14 +46,12 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Seed configurable values from defaults.yaml
     logger.info("Seeding configurable values...")
-    session = get_session()
-    try:
-        ConfigService.seed_database(session)
-        logger.info("Configurable values seeded successfully")
-    except Exception as e:
-        logger.warning(f"Could not seed configurable values: {e}")
-    finally:
-        session.close()
+    with Session(engine) as session:
+        try:
+            ConfigService.seed_database(session)
+            logger.info("Configurable values seeded successfully")
+        except Exception as e:
+            logger.warning(f"Could not seed configurable values: {e}")
 
     yield
 

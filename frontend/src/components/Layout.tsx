@@ -29,6 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useAuth, useLogout } from "@/hooks/useAuth";
+import { Footer } from "@/components/Footer";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -261,6 +262,9 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </Container>
       </Box>
+
+      {/* Footer */}
+      <Footer />
     </Flex>
   );
 }

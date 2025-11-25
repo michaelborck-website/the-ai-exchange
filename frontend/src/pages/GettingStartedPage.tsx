@@ -297,6 +297,24 @@ export default function GettingStartedPage() {
 
           </TabPanels>
         </Tabs>
+
+        {/* Help Section */}
+        <Divider />
+
+        <Box bg="blue.50" p={6} borderRadius="lg" textAlign="center">
+          <Heading size="md" mb={3} color="blue.900">
+            Need Help?
+          </Heading>
+          <Text color="blue.900" mb={4}>
+            Can't find what you're looking for? Our Support & Help Center has answers to common questions, contact information, and feedback options.
+          </Text>
+          <Button
+            colorScheme="blue"
+            onClick={() => navigate("/support")}
+          >
+            Visit Help Center
+          </Button>
+        </Box>
       </VStack>
     </Layout>
   );
